@@ -4,8 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,69 +19,159 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 @Table(name = "users")
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
-    private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+	@Column(nullable = false, unique = true)
+	private String username;
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    @Column(nullable = false)
-    private String password;
+	@JsonProperty(access = Access.WRITE_ONLY)
+	@Column(nullable = false)
+	private String password;
 
-    private boolean enabled = true;
+	@Column(name = "first_name", nullable = false)
+	private String firstName; // User's first name
 
-    public User()
-    {
-    }
+	@Column(name = "last_name", nullable = false)
+	private String lastName; // User's last name
 
-    public Long getId()
-    {
-        return id;
-    }
+	private String email;
 
-    public void setId( Long id )
-    {
-        this.id = id;
-    }
+	private String phone;
+	
+	@ManyToOne
+	@Column(name = "ticket_issued")
+	private Ticket ticketIssued;		// Ticket to be handled by this technician.
+	
+	@OneToOne
+	private Unit unit;		// Unit that this user belongs to.
+	
+	@ManyToOne
+	private User supervisor;		// This technician's supervisor details. 
 
-    public String getUsername()
-    {
-        return username;
-    }
+	@Enumerated(EnumType.STRING)
+	private Position post;
 
-    public void setUsername( String username )
-    {
-        this.username = username;
-    }
+	public User() {
+	}
+	
+	// Simple constructor for regular users ( students )
+	public User(Long id, String firstname, String lastname, String username, String password) {
 
-    public String getPassword()
-    {
-        return password;
-    }
+		this.id = id;
+		this.firstName = firstname;
+		this.lastName = lastname;
+		this.username = username;
+		this.password = password;
+		this.post = Position.USER;
+	}
+	
+	
 
-    public void setPassword( String password )
-    {
-        this.password = password;
-    }
+	public User(Long id, String username, String password, String firstName, String lastName, String email,
+			String phone, Position post) {
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phone = phone;
+		this.post = post;
+	}
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
 
-    public void setEnabled( boolean enabled )
-    {
-        this.enabled = enabled;
-    }
 
-    @Override
-    public String toString()
-    {
-        return "[" + id + ", " + username + ", " + password + "]";
-    }
+	// Types of users on the system.
+	public enum Position {
+		SYS_ADMIN, SUPERVISING_TECHNICIAN, TECHNICIAN, USER
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public Position getPost() {
+		return post;
+	}
+
+	public void setPost(Position post) {
+		this.post = post;
+	}
+
+	public String getPostString() {
+		switch (getPost()) {
+		case SYS_ADMIN:
+			return "SYSTEM ADMINISTRATOR";
+		case SUPERVISING_TECHNICIAN:
+			return "SUPERVISING TECHNICIAN";
+		case TECHNICIAN:
+			return "TECHNICIAN";
+		default:
+			return "USER";
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "First name: " + getFirstName() + "\n" + "Last name:" + getLastName() + "\n" + "User name:"
+				+ getUsername() + "\n" + "Phone number:" + getPhone() + "\n" + "Email:" + getEmail() + "\n" + "Post:"
+				+ getPostString() + "\n";
+	}
 
 }
