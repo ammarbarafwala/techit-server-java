@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import techit.model.Ticket;
 import techit.model.User;
 import techit.model.dao.UserDao;
 
@@ -36,5 +37,29 @@ public class UserDaoImpl implements UserDao {
     {
         return entityManager.merge( user );
     }
+
+	@Override
+	public String getEmail(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Ticket getLastTicketCreated(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User getUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Ticket getUserTicket(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

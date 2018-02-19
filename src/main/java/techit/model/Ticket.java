@@ -4,11 +4,17 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -29,7 +35,11 @@ public class Ticket implements Serializable {
 	
 	@Column(name = "completion_details")
 	private String completionDetails;		// Information pertaining vendors, cost, materials used.
+	
+	@Enumerated(EnumType.STRING)
 	private Progress progress;		// Current progress of the ticket
+	
+	@Enumerated(EnumType.STRING)
 	private Priority priority;		// Importance or level of urgency of the ticket
 	private String location;		// Location where the project is.
 	
@@ -41,6 +51,10 @@ public class Ticket implements Serializable {
 	
 	@ManyToOne
 	private User requesterDetails;
+	
+	 @ManyToMany(cascade = CascadeType.ALL)
+	 @JoinTable(name = "assignments", joinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "technician_id", referencedColumnName = "id"))
+	private List<User> technicians;
 	
 	public enum Progress { OPEN, IN_PROGRESS, ON_HOLD, COMPLETED, CLOSED }
 	public enum Priority { NOT_ASSIGNED, LOW, MEDIUM, HIGH }
@@ -159,6 +173,14 @@ public class Ticket implements Serializable {
 
 	public void setRequesterDetails(User requesterDetails) {
 		this.requesterDetails = requesterDetails;
+	}
+
+	public List<User> getTechnicians() {
+		return technicians;
+	}
+
+	public void setTechnicians(List<User> technicians) {
+		this.technicians = technicians;
 	}
 
 	@Override

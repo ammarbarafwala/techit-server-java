@@ -3,30 +3,37 @@ package techit.model;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class UpdateDetails implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String modifier; // modifier's username
+	@ManyToOne
+	@JoinColumn(
+	        name = "modifier", 
+	        referencedColumnName = "username"
+	    )
+	private User modifier; // modifier's username
 	private String updateDetails;
 	private String modifiedDate;
 	
 	public UpdateDetails() {}
 	
-	public UpdateDetails(String modifier, String updateDetails, String modifiedDate) {
+	public UpdateDetails(User modifier, String updateDetails, String modifiedDate) {
 		
 		this.modifier = modifier;
 		this.updateDetails = updateDetails;
 		this.modifiedDate = modifiedDate;
 	}
 
-	public String getModifier() {
+	public User getModifier() {
 		return modifier;
 	}
 
-	public void setModifier(String modifier) {
+	public void setModifier(User modifier) {
 		this.modifier = modifier;
 	}
 

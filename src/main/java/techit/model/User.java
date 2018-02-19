@@ -1,6 +1,7 @@
 package techit.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +9,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,21 +44,20 @@ public class User implements Serializable {
 
 	private String phone;
 	
-	@ManyToOne
-	@Column(name = "ticket_issued")
-	private Ticket ticketIssued;		// Ticket to be handled by this technician.
+	@OneToMany(mappedBy="requesterDetails")
+	private List<Ticket> ticketsRequested;
 	
-	@OneToOne
+	@ManyToMany(mappedBy="technicians")
+	private List<Ticket> ticketsAssigned;
+	
+	@ManyToOne
 	private Unit unit;		// Unit that this user belongs to.
 	
-	@ManyToOne
-	private User supervisor;		// This technician's supervisor details. 
-
 	@Enumerated(EnumType.STRING)
 	private Position post;
 
 	public User() {
-	}
+	} 
 	
 	// Simple constructor for regular users ( students )
 	public User(Long id, String firstname, String lastname, String username, String password) {
@@ -72,7 +73,7 @@ public class User implements Serializable {
 	
 
 	public User(Long id, String username, String password, String firstName, String lastName, String email,
-			String phone, Position post) {
+			String phone, Position post, Unit unit) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -81,6 +82,7 @@ public class User implements Serializable {
 		this.email = email;
 		this.phone = phone;
 		this.post = post;
+		this.unit = unit;
 	}
 
 
@@ -165,6 +167,30 @@ public class User implements Serializable {
 		default:
 			return "USER";
 		}
+	}
+
+	public List<Ticket> getTicketsRequested() {
+		return ticketsRequested;
+	}
+
+	public void setTicketsRequested(List<Ticket> ticketsRequested) {
+		this.ticketsRequested = ticketsRequested;
+	}
+
+	public List<Ticket> getTicketsAssigned() {
+		return ticketsAssigned;
+	}
+
+	public void setTicketsAssigned(List<Ticket> ticketsAssigned) {
+		this.ticketsAssigned = ticketsAssigned;
+	}
+
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 
 	@Override
