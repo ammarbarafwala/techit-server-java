@@ -66,4 +66,34 @@ public class TicketDaoImpl implements TicketDao {
 		return null;
 	}
 
+	@Override
+	public UpdateDetails saveUpdate(UpdateDetails update) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void assignTechnician(User technician) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Ticket GetUserTicket(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Ticket searchTicket(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Ticket saveUpdate(Ticket update) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -10,15 +10,26 @@ public interface TicketDao {
 
 	Ticket getTicket(Long id);
 	
-	List<Ticket> getTickets();
+	Ticket GetUserTicket(User user);
 	
-	boolean checkAssignment(User technician, Ticket ticket);
+	Ticket searchTicket(Long id);
 	
-	Ticket saveTicket(Ticket ticket);
-	
-	String getRequestorEmail(Ticket ticket);
+	List<UpdateDetails> getTicketUpdates(Ticket ticket);
 	
 	List<User> getTechniciansAssigned(Ticket ticket);
 	
-	List<UpdateDetails> getTicketUpdates(Ticket ticket);
-	}
+	String getRequestorEmail(Ticket ticket);
+	
+	UpdateDetails saveUpdate(UpdateDetails update);
+	
+	Ticket saveTicket(Ticket ticket);
+	
+	List<Ticket> getTickets();
+	
+	Ticket saveUpdate(Ticket update);
+	
+	boolean checkAssignment(User technician, Ticket ticket);
+	
+	void assignTechnician(User technician);
+	
+}

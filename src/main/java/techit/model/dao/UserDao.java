@@ -8,13 +8,13 @@ import techit.model.User;
 public interface UserDao {
 
     User getUser( Long id );
-
-    List<User> getUsers();
     
     User getUserByUsername(String username);
     
+    List<User> getUsers();
+    
     String getEmail(User user);
-
+    
     User saveUser( User user );
     
     Ticket getLastTicketCreated(User user);
