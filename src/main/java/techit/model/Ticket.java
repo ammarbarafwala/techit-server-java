@@ -26,12 +26,21 @@ public class Ticket implements Serializable {
 	
 	@Id
     @GeneratedValue
-    private Long id;		// Ticket's unique id.
+    private Long id;					// Ticket's unique id.
 	
 	private String subject;			// Subject of the ticket.
-	private String details; 		// Text concerning the project.
-	private Date startDate; 		// Project's starting date.
+	private String details;			// Text concerning the project.
+	
+	@Column(name = "start_dt")
+	private Date startDate;			// Project's starting date.
+	
+	@Column(name = "end_dt")		
 	private Date endDate; 			// When the project was completed.
+	
+	private String location;		// Location where the project is.
+	
+	@ElementCollection
+	private List<UpdateDetails> updates;	// List of all updates that was made to the ticket.
 	
 	@Column(name = "completion_details")
 	private String completionDetails;		// Information pertaining vendors, cost, materials used.
@@ -41,10 +50,6 @@ public class Ticket implements Serializable {
 	
 	@Enumerated(EnumType.STRING)
 	private Priority priority;		// Importance or level of urgency of the ticket
-	private String location;		// Location where the project is.
-	
-	@ElementCollection
-	private List<UpdateDetails> updates;	// List of all updates that was made to the ticket.
 	
 	@ManyToOne
 	private Unit unit;
@@ -52,31 +57,35 @@ public class Ticket implements Serializable {
 	@ManyToOne
 	private User requesterDetails;
 	
-	 @ManyToMany(cascade = CascadeType.ALL)
-	 @JoinTable(name = "assignments", joinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "technician_id", referencedColumnName = "id"))
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "assignments", joinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "technician_id", referencedColumnName = "id"))
 	private List<User> technicians;
 	
 	public enum Progress { OPEN, IN_PROGRESS, ON_HOLD, COMPLETED, CLOSED }
 	public enum Priority { NOT_ASSIGNED, LOW, MEDIUM, HIGH }
-		
+	
+	// Default Constructor.
 	public Ticket() {
 	}
 
-	public Ticket(Long id, String subject, String details, Date startDate,
-			Progress progress, Priority priority, String location, Unit unit,
-			User requesterDetails) {
+	// Constructor with all the fields.
+	public Ticket(Long id, String subject, String details, Date startDate, Date endDate, String location,
+			List<UpdateDetails> updates, String completionDetails, Progress progress, Priority priority, Unit unit,
+			User requesterDetails, List<User> technicians) {
+		super();
 		this.id = id;
 		this.subject = subject;
 		this.details = details;
 		this.startDate = startDate;
-		this.endDate = null;
-		this.completionDetails = null;
+		this.endDate = endDate;
+		this.location = location;
+		this.updates = updates;
+		this.completionDetails = completionDetails;
 		this.progress = progress;
 		this.priority = priority;
-		this.location = location;
-		this.updates = null;
 		this.unit = unit;
 		this.requesterDetails = requesterDetails;
+		this.technicians = technicians;
 	}
 
 	public Long getId() {
@@ -119,6 +128,22 @@ public class Ticket implements Serializable {
 		this.endDate = endDate;
 	}
 
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public List<UpdateDetails> getUpdates() {
+		return updates;
+	}
+
+	public void setUpdates(List<UpdateDetails> updates) {
+		this.updates = updates;
+	}
+
 	public String getCompletionDetails() {
 		return completionDetails;
 	}
@@ -141,22 +166,6 @@ public class Ticket implements Serializable {
 
 	public void setPriority(Priority priority) {
 		this.priority = priority;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public List<UpdateDetails> getUpdates() {
-		return updates;
-	}
-
-	public void setUpdates(List<UpdateDetails> updates) {
-		this.updates = updates;
 	}
 
 	public Unit getUnit() {
@@ -186,10 +195,9 @@ public class Ticket implements Serializable {
 	@Override
 	public String toString() {
 		return "Ticket [id=" + id + ", subject=" + subject + ", details=" + details + ", startDate=" + startDate
-				+ ", endDate=" + endDate + ", completionDetails=" + completionDetails + ", progress=" + progress
-				+ ", priority=" + priority + ", location=" + location + ", updates=" + updates + ", unit=" + unit
-				+ ", requesterDetails=" + requesterDetails + "]";
+				+ ", endDate=" + endDate + ", location=" + location + ", updates=" + updates + ", completionDetails="
+				+ completionDetails + ", progress=" + progress + ", priority=" + priority + ", unit=" + unit
+				+ ", requesterDetails=" + requesterDetails + ", technicians=" + technicians + "]";
 	}
-	
-	
+
 }

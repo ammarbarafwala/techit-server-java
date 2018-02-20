@@ -1,7 +1,9 @@
 package techit.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,16 +19,24 @@ public class UpdateDetails implements Serializable {
 	        referencedColumnName = "username"
 	    )
 	private User modifier; // modifier's username
+	
 	private String updateDetails;
 	private String modifiedDate;
 	
-	public UpdateDetails() {}
+	@Column(name = "lastUpdate_dt")
+	private Date lastUpdatedDate;	// Last date where changes were made to the ticket.
 	
-	public UpdateDetails(User modifier, String updateDetails, String modifiedDate) {
+	//Default Constructor.
+	public UpdateDetails() {
 		
+	}
+
+	public UpdateDetails(User modifier, String updateDetails, String modifiedDate, Date lastUpdatedDate) {
+		super();
 		this.modifier = modifier;
 		this.updateDetails = updateDetails;
 		this.modifiedDate = modifiedDate;
+		this.lastUpdatedDate = lastUpdatedDate;
 	}
 
 	public User getModifier() {
@@ -53,11 +63,22 @@ public class UpdateDetails implements Serializable {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public Date getLastUpdatedDate() {
+		return lastUpdatedDate;
+	}
+
+	public void setLastUpdatedDate(Date lastUpdatedDate) {
+		this.lastUpdatedDate = lastUpdatedDate;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public String toString() {
 		return "UpdateDetails [modifier=" + modifier + ", updateDetails=" + updateDetails + ", modifiedDate="
-				+ modifiedDate + "]";
+				+ modifiedDate + ", lastUpdatedDate=" + lastUpdatedDate + "]";
 	}
-	
 	
 }

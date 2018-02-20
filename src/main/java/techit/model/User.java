@@ -35,14 +35,16 @@ public class User implements Serializable {
 	private String password;
 
 	@Column(name = "first_name", nullable = false)
-	private String firstName; // User's first name
+	private String firstName; 			// User's first name
 
 	@Column(name = "last_name", nullable = false)
-	private String lastName; // User's last name
+	private String lastName; 			// User's last name
 
 	private String email;
-
 	private String phone;
+	
+	@Enumerated(EnumType.STRING)
+	private Position post;
 	
 	@OneToMany(mappedBy="requesterDetails")
 	private List<Ticket> ticketsRequested;
@@ -51,11 +53,14 @@ public class User implements Serializable {
 	private List<Ticket> ticketsAssigned;
 	
 	@ManyToOne
-	private Unit unit;		// Unit that this user belongs to.
+	private Unit unit;				// Unit that this user belongs to.
 	
-	@Enumerated(EnumType.STRING)
-	private Position post;
+	// Types of users on the system.
+	public enum Position {
+		SYS_ADMIN, SUPERVISING_TECHNICIAN, TECHNICIAN, USER
+	}
 
+	// Default Contructor.
 	public User() {
 	} 
 	
@@ -83,13 +88,6 @@ public class User implements Serializable {
 		this.phone = phone;
 		this.post = post;
 		this.unit = unit;
-	}
-
-
-
-	// Types of users on the system.
-	public enum Position {
-		SYS_ADMIN, SUPERVISING_TECHNICIAN, TECHNICIAN, USER
 	}
 
 	public Long getId() {

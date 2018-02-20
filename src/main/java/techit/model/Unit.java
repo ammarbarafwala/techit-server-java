@@ -40,7 +40,8 @@ public class Unit implements Serializable {
 	
 	@OneToMany(mappedBy="unit")
 	private List<User> technicians;
-
+	
+	//Default Constructor.
 	public Unit() {
 		
 	}
@@ -100,7 +101,5 @@ public class Unit implements Serializable {
 	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
 	}
-	
-	
 	
 }
