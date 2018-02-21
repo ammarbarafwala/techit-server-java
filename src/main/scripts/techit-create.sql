@@ -8,26 +8,25 @@ create table hibernate_sequence (
     ) engine=InnoDB;
 
 insert into hibernate_sequence values ( 1 );
-insert into hibernate_sequence values ( 1 );
+
 insert into hibernate_sequence values ( 1 );
 
-create table Ticket_updates (
-       Ticket_id bigint not null,
-       lastUpdate_dt datetime,
-       modifiedDate varchar(255),
-       modifier varchar(255),
-       updateDetails varchar(255)
-    ) engine=InnoDB;
+insert into hibernate_sequence values ( 1 );
+
+insert into hibernate_sequence values ( 1 );
 
 create table tickets (
        id bigint not null,
         completion_details varchar(255),
         details varchar(255),
         end_dt datetime,
+        update_dt datetime,
+        update_tm varchar(255),
         location varchar(255),
         priority varchar(255),
         progress varchar(255),
         start_dt datetime,
+        start_time varchar(255),
         subject varchar(255),
         requesterDetails_id bigint,
         unit_id bigint,
@@ -41,6 +40,15 @@ create table units (
         location varchar(255) not null,
         name varchar(255) not null,
         phone varchar(255) not null,
+        primary key (id)
+    ) engine=InnoDB;
+
+create table updates (
+       id bigint not null,
+        modifiedDate varchar(255),
+        updateDetails varchar(255),
+        modifier varchar(255),
+        ticket_id bigint,
         primary key (id)
     ) engine=InnoDB;
 
@@ -73,16 +81,6 @@ alter table assignments
        foreign key (ticket_id) 
        references tickets (id);
 
-alter table Ticket_updates 
-       add constraint FKk0iy7c8k1ht1tfp76ul5092o7 
-       foreign key (modifier) 
-       references users (username);
-
-alter table Ticket_updates 
-       add constraint FK8c97v8b7g3qfpykcgdu9bpfy 
-       foreign key (Ticket_id) 
-       references tickets (id);
-
 alter table tickets 
        add constraint FKo5pcvdw2fctifmrgvohqfcef6 
        foreign key (requesterDetails_id) 
@@ -92,6 +90,16 @@ alter table tickets
        add constraint FKmj126vcy9uobxd6rfu269wjc2 
        foreign key (unit_id) 
        references units (id);
+
+    alter table updates 
+       add constraint FKkm5vbuo5qarrdod33upfsgugn 
+       foreign key (modifier) 
+       references users (username);
+
+alter table updates 
+       add constraint FK3fnl74oyd1raon25v5lo3hyag 
+       foreign key (ticket_id) 
+       references tickets (id);
 
 alter table users 
        add constraint FKp2hfld4bhbwtakwrmt4xq6een 
