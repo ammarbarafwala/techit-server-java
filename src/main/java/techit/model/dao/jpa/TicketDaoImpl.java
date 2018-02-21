@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import techit.model.Ticket;
-import techit.model.UpdateDetails;
 import techit.model.User;
 import techit.model.dao.TicketDao;
 
@@ -61,18 +60,6 @@ public class TicketDaoImpl implements TicketDao {
 	}
 
 	@Override
-	public List<UpdateDetails> getTicketUpdates(Ticket ticket) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public UpdateDetails saveUpdate(UpdateDetails update) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void assignTechnician(User technician) {
 		// TODO Auto-generated method stub
 		
@@ -86,12 +73,6 @@ public class TicketDaoImpl implements TicketDao {
 
 	@Override
 	public Ticket searchTicket(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Ticket saveUpdate(Ticket update) {
 		// TODO Auto-generated method stub
 		return null;
 	}
