@@ -18,28 +18,28 @@ public class Unit implements Serializable {
 	
 	@Id
     @GeneratedValue
-    private Long id;		// Unit's unique id.
+    private Long id;					// Unit's unique id.
 	
 	@Column(nullable = false, unique = true)
-	private String name;		// Name of the unit.
+	private String name;				// Name of the unit.
 	
 	@Column(nullable = false)
-	private String phone;
+	private String phone;			// Phone number of the unit.
 
 	@Column(nullable = false)
-	private String location;
+	private String location;			// Location of the unit.
 
 	@Column(nullable = false)
-	private String email;
+	private String email;			// Email of the unit.
 
 	@Column(nullable = false)
-	private String description;
-	
-	@OneToMany(mappedBy="unit")
-	private List<Ticket> tickets; 
+	private String description;		// Supplemental info about the unit.
 	
 	@OneToMany(mappedBy="unit")
-	private List<User> technicians;
+	private List<Ticket> tickets;	// Tickets assigned to the unit.
+	
+	@OneToMany(mappedBy="unit")
+	private List<User> technicians;	// Technicians working under the unit.
 	
 	//Default Constructor.
 	public Unit() {

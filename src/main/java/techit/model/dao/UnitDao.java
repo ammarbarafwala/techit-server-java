@@ -7,14 +7,14 @@ import techit.model.User;
 
 public interface UnitDao {
 	
-	List<Unit> getUnits();
-	
 	Unit getUnit(Long id);
+	
+	List<Unit> getUnits();
 	
 	List<User> getSupervisors(Unit unit);
 	
 	List<User> getTechnicians(Unit unit);
 	
-	
+	Unit saveUnit(Unit unit);
 
 }

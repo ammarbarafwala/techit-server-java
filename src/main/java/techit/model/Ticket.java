@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -26,30 +26,39 @@ public class Ticket implements Serializable {
 	
 	@Id
     @GeneratedValue
-    private Long id;					// Ticket's unique id.
+    private Long id;						// Ticket's unique id.
 	
-	private String subject;			// Subject of the ticket.
-	private String details;			// Text concerning the project.
+	private String subject;				// Subject of the ticket.
+	private String details;				// Text concerning the project.
 	
 	@Column(name = "start_dt")
-	private Date startDate;			// Project's starting date.
+	private Date startDate;				// Project's starting date.
+	
+	@Column(name = "start_time")
+	private String startDateTime;		// Time of creation of ticket.
 	
 	@Column(name = "end_dt")		
-	private Date endDate; 			// When the project was completed.
+	private Date endDate; 				// When the project was completed.
 	
-	private String location;		// Location where the project is.
+	@Column(name = "update_dt")
+	private Date lastUpdated;			// last date where changes were made to the ticket (edits, technician updates, etc..)
 	
-	@ElementCollection
+	@Column(name = "update_tm")
+	private String lastUpdatedTime;		// Same as last updated but this denotes the time changes.
+	
+	private String location;				// Location where the project is.
+	
+	@OneToMany(mappedBy="ticket")
 	private List<UpdateDetails> updates;	// List of all updates that was made to the ticket.
 	
 	@Column(name = "completion_details")
-	private String completionDetails;		// Information pertaining vendors, cost, materials used.
+	private String completionDetails;	// Information pertaining vendors, cost, materials used.
 	
 	@Enumerated(EnumType.STRING)
-	private Progress progress;		// Current progress of the ticket
+	private Progress progress;			// Current progress of the ticket
 	
 	@Enumerated(EnumType.STRING)
-	private Priority priority;		// Importance or level of urgency of the ticket
+	private Priority priority;			// Importance or level of urgency of the ticket
 	
 	@ManyToOne
 	private Unit unit;
@@ -69,15 +78,19 @@ public class Ticket implements Serializable {
 	}
 
 	// Constructor with all the fields.
-	public Ticket(Long id, String subject, String details, Date startDate, Date endDate, String location,
-			List<UpdateDetails> updates, String completionDetails, Progress progress, Priority priority, Unit unit,
-			User requesterDetails, List<User> technicians) {
+	public Ticket(Long id, String subject, String details, Date startDate, String startDateTime, Date endDate,
+			Date lastUpdated, String lastUpdatedTime, String location, List<UpdateDetails> updates,
+			String completionDetails, Progress progress, Priority priority, Unit unit, User requesterDetails,
+			List<User> technicians) {
 		super();
 		this.id = id;
 		this.subject = subject;
 		this.details = details;
 		this.startDate = startDate;
+		this.startDateTime = startDateTime;
 		this.endDate = endDate;
+		this.lastUpdated = lastUpdated;
+		this.lastUpdatedTime = lastUpdatedTime;
 		this.location = location;
 		this.updates = updates;
 		this.completionDetails = completionDetails;
@@ -120,12 +133,36 @@ public class Ticket implements Serializable {
 		this.startDate = startDate;
 	}
 
+	public String getStartDateTime() {
+		return startDateTime;
+	}
+
+	public void setStartDateTime(String startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+
 	public Date getEndDate() {
 		return endDate;
 	}
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public String getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+	public void setLastUpdatedTime(String lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
 	}
 
 	public String getLocation() {
@@ -192,12 +229,17 @@ public class Ticket implements Serializable {
 		this.technicians = technicians;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public String toString() {
 		return "Ticket [id=" + id + ", subject=" + subject + ", details=" + details + ", startDate=" + startDate
-				+ ", endDate=" + endDate + ", location=" + location + ", updates=" + updates + ", completionDetails="
-				+ completionDetails + ", progress=" + progress + ", priority=" + priority + ", unit=" + unit
-				+ ", requesterDetails=" + requesterDetails + ", technicians=" + technicians + "]";
+				+ ", startDateTime=" + startDateTime + ", endDate=" + endDate + ", lastUpdated=" + lastUpdated
+				+ ", lastUpdatedTime=" + lastUpdatedTime + ", location=" + location + ", updates=" + updates
+				+ ", completionDetails=" + completionDetails + ", progress=" + progress + ", priority=" + priority
+				+ ", unit=" + unit + ", requesterDetails=" + requesterDetails + ", technicians=" + technicians + "]";
 	}
-
+	
 }

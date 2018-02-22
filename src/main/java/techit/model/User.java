@@ -25,32 +25,32 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Long id;							// User's unique id.
 
 	@Column(nullable = false, unique = true)
-	private String username;
+	private String username;					// Username of the user.
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@Column(nullable = false)
-	private String password;
+	private String password;					// Password of the user.
 
 	@Column(name = "first_name", nullable = false)
-	private String firstName; 			// User's first name
+	private String firstName; 				// User's first name
 
 	@Column(name = "last_name", nullable = false)
-	private String lastName; 			// User's last name
+	private String lastName; 				// User's last name
 
-	private String email;
-	private String phone;
+	private String email;					// Email of the user.
+	private String phone;					// Phone number of the user.
 	
 	@Enumerated(EnumType.STRING)
-	private Position post;
+	private Position post;					// Position of the user.
 	
-	@OneToMany(mappedBy="requesterDetails")
-	private List<Ticket> ticketsRequested;
+	@OneToMany(mappedBy="requesterDetails")	
+	private List<Ticket> ticketsRequested;	// Tickets created by the user.
 	
 	@ManyToMany(mappedBy="technicians")
-	private List<Ticket> ticketsAssigned;
+	private List<Ticket> ticketsAssigned;	// Tickets assigned to the technicians
 	
 	@ManyToOne
 	private Unit unit;				// Unit that this user belongs to.
@@ -76,7 +76,7 @@ public class User implements Serializable {
 	}
 	
 	
-
+	// Constructor with user information.
 	public User(Long id, String username, String password, String firstName, String lastName, String email,
 			String phone, Position post, Unit unit) {
 		this.id = id;

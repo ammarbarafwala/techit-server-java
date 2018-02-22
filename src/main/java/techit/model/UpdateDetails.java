@@ -1,42 +1,57 @@
 package techit.model;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-@Embeddable
+@Entity
+@Table(name = "updates")
 public class UpdateDetails implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	@Id
+    @GeneratedValue
+    private Long id;					// Updates unique id.
 	
 	@ManyToOne
 	@JoinColumn(
 	        name = "modifier", 
 	        referencedColumnName = "username"
 	    )
-	private User modifier; // modifier's username
+	private User modifier; 			// modifier's username.
 	
-	private String updateDetails;
-	private String modifiedDate;
+	private String updateDetails;	// Details of updates.
+	private String modifiedDate;		// Date on which the update was made.
 	
-	@Column(name = "lastUpdate_dt")
-	private Date lastUpdatedDate;	// Last date where changes were made to the ticket.
+	@ManyToOne
+	private Ticket ticket;			// Ticket to which the update has been made.
 	
 	//Default Constructor.
 	public UpdateDetails() {
 		
 	}
-
-	public UpdateDetails(User modifier, String updateDetails, String modifiedDate, Date lastUpdatedDate) {
+	
+	// Constructor with all the fields.
+	public UpdateDetails(Long id, User modifier, String updateDetails, String modifiedDate, Ticket ticket) {
 		super();
+		this.id = id;
 		this.modifier = modifier;
 		this.updateDetails = updateDetails;
 		this.modifiedDate = modifiedDate;
-		this.lastUpdatedDate = lastUpdatedDate;
+		this.ticket = ticket;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public User getModifier() {
@@ -63,12 +78,12 @@ public class UpdateDetails implements Serializable {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public Date getLastUpdatedDate() {
-		return lastUpdatedDate;
+	public Ticket getTicket() {
+		return ticket;
 	}
 
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
-		this.lastUpdatedDate = lastUpdatedDate;
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}
 
 	public static long getSerialversionuid() {
@@ -77,8 +92,8 @@ public class UpdateDetails implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UpdateDetails [modifier=" + modifier + ", updateDetails=" + updateDetails + ", modifiedDate="
-				+ modifiedDate + ", lastUpdatedDate=" + lastUpdatedDate + "]";
+		return "UpdateDetails [id=" + id + ", modifier=" + modifier + ", updateDetails=" + updateDetails
+				+ ", modifiedDate=" + modifiedDate + ", ticket=" + ticket + "]";
 	}
 	
 }
