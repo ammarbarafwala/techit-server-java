@@ -1,12 +1,14 @@
 package techit.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -25,44 +27,50 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Long id;							// User's unique id.
 
 	@Column(nullable = false, unique = true)
-	private String username;
+	private String username;					// Username of the user.
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	@Column(nullable = false)
-	private String password;
+	private String password;					// Password of the user.
 
 	@Column(name = "first_name", nullable = false)
-	private String firstName; // User's first name
+	private String firstName; 				// User's first name
 
 	@Column(name = "last_name", nullable = false)
-	private String lastName; // User's last name
+	private String lastName; 				// User's last name
 
-	private String email;
-
-	private String phone;
-	
-	@OneToMany(mappedBy="requesterDetails")
-	private List<Ticket> ticketsRequested;
-	
-	@ManyToMany(mappedBy="technicians")
-	private List<Ticket> ticketsAssigned;
-	
-	@ManyToOne
-	private Unit unit;		// Unit that this user belongs to.
+	private String email;					// Email of the user.
+	private String phone;					// Phone number of the user.
 	
 	@Enumerated(EnumType.STRING)
-	private Position post;
+	private Position post;					// Position of the user.
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="requesterDetails")	
+	private Set<Ticket> ticketsRequested;	// Tickets created by the user.
+	
+	@ManyToMany(fetch=FetchType.LAZY, mappedBy="technicians")
+	private Set<Ticket> ticketsAssigned;	// Tickets assigned to the technicians
+	
+	@ManyToOne
+	private Unit unit;				// Unit that this user belongs to.
+	
+	// Types of users on the system.
+	public enum Position {
+		SYS_ADMIN, SUPERVISING_TECHNICIAN, TECHNICIAN, USER
+	}
 
+	// Default Constructor.
 	public User() {
+		ticketsRequested = new HashSet<Ticket>();
+		ticketsAssigned = new HashSet<Ticket>();
 	} 
 	
 	// Simple constructor for regular users ( students )
-	public User(Long id, String firstname, String lastname, String username, String password) {
-
-		this.id = id;
+	public User(String firstname, String lastname, String username, String password) {
+		this();
 		this.firstName = firstname;
 		this.lastName = lastname;
 		this.username = username;
@@ -71,10 +79,10 @@ public class User implements Serializable {
 	}
 	
 	
-
-	public User(Long id, String username, String password, String firstName, String lastName, String email,
+	// Constructor with user information.
+	public User(String username, String password, String firstName, String lastName, String email,
 			String phone, Position post, Unit unit) {
-		this.id = id;
+		this();
 		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
@@ -83,13 +91,6 @@ public class User implements Serializable {
 		this.phone = phone;
 		this.post = post;
 		this.unit = unit;
-	}
-
-
-
-	// Types of users on the system.
-	public enum Position {
-		SYS_ADMIN, SUPERVISING_TECHNICIAN, TECHNICIAN, USER
 	}
 
 	public Long getId() {
@@ -169,19 +170,19 @@ public class User implements Serializable {
 		}
 	}
 
-	public List<Ticket> getTicketsRequested() {
+	public Set<Ticket> getTicketsRequested() {
 		return ticketsRequested;
 	}
 
-	public void setTicketsRequested(List<Ticket> ticketsRequested) {
+	public void setTicketsRequested(Set<Ticket> ticketsRequested) {
 		this.ticketsRequested = ticketsRequested;
 	}
 
-	public List<Ticket> getTicketsAssigned() {
+	public Set<Ticket> getTicketsAssigned() {
 		return ticketsAssigned;
 	}
 
-	public void setTicketsAssigned(List<Ticket> ticketsAssigned) {
+	public void setTicketsAssigned(Set<Ticket> ticketsAssigned) {
 		this.ticketsAssigned = ticketsAssigned;
 	}
 

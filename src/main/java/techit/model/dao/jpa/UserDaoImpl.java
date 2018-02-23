@@ -1,6 +1,7 @@
 package techit.model.dao.jpa;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import techit.model.Ticket;
+import techit.model.Unit;
 import techit.model.User;
 import techit.model.dao.UserDao;
 
@@ -37,29 +39,55 @@ public class UserDaoImpl implements UserDao {
     {
         return entityManager.merge( user );
     }
-
+	
 	@Override
-	public String getEmail(User user) {
+	public List<User> getSupervisors(Unit unit) {
 		// TODO Auto-generated method stub
-		return null;
+		return entityManager.createQuery( "from User where unit = :unit and post = 'SUPERVISING TECHNICIAN'", User.class )
+		.setParameter( "unit", unit.getId())
+        .getResultList();
 	}
 
 	@Override
-	public Ticket getLastTicketCreated(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getTechnicians(Unit unit) {
+		return entityManager.createQuery( "from User where unit = :unit and post = 'TECHNICIAN'", User.class )
+				.setParameter( "unit", unit.getId())
+		        .getResultList();
 	}
+	
+	@Override
+	public List<User> getTechniciansAndSupervisors(Unit unit) {
+		return entityManager.createQuery( "from User where unit = :unit and post = 'TECHNICIAN' or post = 'SUPERVISING TECHNICIAN'", User.class )
+				.setParameter( "unit", unit.getId())
+		        .getResultList();
+	}
+
 
 	@Override
 	public User getUserByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		List<User> users = entityManager.createQuery("from User where username = :username", User.class)
+				 .setParameter("username", username).setMaxResults(1).getResultList();
+		return users.size() == 0? null : users.get(0);
+	}
+	
+	@Override
+	public Set<User> getTechniciansAssigned(Ticket ticket) {
+		return ticket.getTechnicians();
 	}
 
 	@Override
-	public Ticket getUserTicket(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public User authenticateUser(String username, String password) {
+		User user = getUserByUsername(username);
+		if (user !=null) {
+			if (user.getPassword() == password){
+				return user;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+		
 	}
 
 }

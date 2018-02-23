@@ -20,7 +20,7 @@ public class UnitDaoImpl implements UnitDao {
 	@Override
 	public List<Unit> getUnits() {
 		
-		return entityManager.createQuery( "from Ticket order by id", Unit.class )
+		return entityManager.createQuery( "from Unit order by id", Unit.class )
 	            .getResultList();
 	}
 
@@ -29,16 +29,32 @@ public class UnitDaoImpl implements UnitDao {
 		return entityManager.find(Unit.class, id);
 	}
 
+
 	@Override
-	public List<User> getSupervisors(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public Unit saveUnit(Unit unit) {
+		return entityManager.merge(unit);
 	}
 
 	@Override
-	public List<User> getTechnicians(Unit unit) {
-		// TODO Auto-generated method stub
-		return null;
+	public Unit getUnitByName(String name) {
+		List<Unit> units =  entityManager.createQuery( "from Unit where name = :name ", Unit.class )
+	            .setParameter("name", name).setMaxResults(1).getResultList();
+		return units.size() == 0? null : units.get(0);
+	}
+
+	@Override
+	public void deleteUnit(Unit unit) {
+		entityManager.remove(unit);
+	}
+
+	@Override
+	public void addTechnicianToUnit(User technician, Unit unit) {
+		unit.getTechnicians().add(technician);
+	}
+
+	@Override
+	public void removeTechnicianFromUnit(User technician, Unit unit) {
+		unit.getTechnicians().remove(technician);
 	}
 
 }
