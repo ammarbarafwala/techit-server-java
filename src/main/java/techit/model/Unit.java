@@ -1,10 +1,13 @@
 package techit.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -35,15 +38,25 @@ public class Unit implements Serializable {
 	@Column(nullable = false)
 	private String description;		// Supplemental info about the unit.
 	
-	@OneToMany(mappedBy="unit")
-	private List<Ticket> tickets;	// Tickets assigned to the unit.
+	@OneToMany(mappedBy="unit", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<Ticket> tickets;	// Tickets assigned to the unit.
 	
-	@OneToMany(mappedBy="unit")
-	private List<User> technicians;	// Technicians working under the unit.
+	@OneToMany(mappedBy="unit", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<User> technicians;	// Technicians working under the unit.
 	
 	//Default Constructor.
 	public Unit() {
-		
+		technicians = new HashSet<User>();
+		tickets = new HashSet<Ticket>();
+	}
+
+	public Unit(String name, String phone, String location, String email, String description) {
+		this();
+		this.name = name;
+		this.phone = phone;
+		this.location = location;
+		this.email = email;
+		this.description = description;
 	}
 
 	public Long getId() {
@@ -94,12 +107,20 @@ public class Unit implements Serializable {
 		this.description = description;
 	}
 
-	public List<Ticket> getTickets() {
+	public Set<Ticket> getTickets() {
 		return tickets;
 	}
 
-	public void setTickets(List<Ticket> tickets) {
+	public void setTickets(Set<Ticket> tickets) {
 		this.tickets = tickets;
+	}
+
+	public Set<User> getTechnicians() {
+		return technicians;
+	}
+
+	public void setTechnicians(Set<User> technicians) {
+		this.technicians = technicians;
 	}
 	
 }

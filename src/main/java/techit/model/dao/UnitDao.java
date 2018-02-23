@@ -11,10 +11,15 @@ public interface UnitDao {
 	
 	List<Unit> getUnits();
 	
-	List<User> getSupervisors(Unit unit);
-	
-	List<User> getTechnicians(Unit unit);
-	
 	Unit saveUnit(Unit unit);
+	
+	Unit getUnitByName(String name);
+	
+	void deleteUnit(Unit unit);
+	
+	void addTechnicianToUnit(User technician, Unit unit);
+	
+	void removeTechnicianFromUnit(User technician, Unit unit);
+	
 
 }

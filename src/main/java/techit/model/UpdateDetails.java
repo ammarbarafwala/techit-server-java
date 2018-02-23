@@ -1,6 +1,8 @@
 package techit.model;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -26,7 +28,7 @@ public class UpdateDetails implements Serializable {
 	private User modifier; 			// modifier's username.
 	
 	private String updateDetails;	// Details of updates.
-	private String modifiedDate;		// Date on which the update was made.
+	private Date modifiedDate;		// Date on which the update was made.
 	
 	@ManyToOne
 	private Ticket ticket;			// Ticket to which the update has been made.
@@ -39,10 +41,9 @@ public class UpdateDetails implements Serializable {
 	// Constructor with all the fields.
 	public UpdateDetails(Long id, User modifier, String updateDetails, String modifiedDate, Ticket ticket) {
 		super();
-		this.id = id;
 		this.modifier = modifier;
 		this.updateDetails = updateDetails;
-		this.modifiedDate = modifiedDate;
+		this.modifiedDate = new Date();
 		this.ticket = ticket;
 	}
 
@@ -70,11 +71,11 @@ public class UpdateDetails implements Serializable {
 		this.updateDetails = updateDetails;
 	}
 
-	public String getModifiedDate() {
+	public Date getModifiedDate() {
 		return modifiedDate;
 	}
 
-	public void setModifiedDate(String modifiedDate) {
+	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
 

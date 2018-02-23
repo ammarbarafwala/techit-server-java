@@ -35,8 +35,8 @@ public class TicketDaoImpl implements TicketDao {
 
 	@Override
 	public boolean checkAssignment(User technician, Ticket ticket) {
-		// TODO Auto-generated method stub
-		return false;
+		// not sure we need to do this. we can get technicians assigned
+		return ticket.getTechnicians().contains(technician);
 	}
 
 	@Override
@@ -47,34 +47,36 @@ public class TicketDaoImpl implements TicketDao {
 		
 	}
 
-	@Override
-	public String getRequestorEmail(Ticket ticket) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
-	public List<User> getTechniciansAssigned(Ticket ticket) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void assignTechnician(User technician) {
-		// TODO Auto-generated method stub
+	public void assignTechnician(User technician, Ticket ticket) {
+		ticket.getTechnicians().add(technician);
+		entityManager.merge(ticket);
 		
 	}
 
 	@Override
-	public Ticket GetUserTicket(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Ticket> getUserTickets(User user) {
+		return entityManager.createQuery("from Ticket where requesterDetails = :user ", Ticket.class)
+				.setParameter("user", user.getId()).getResultList();
 	}
 
 	@Override
-	public Ticket searchTicket(Long id) {
+	public void deleteTicket(Ticket ticket) {
 		// TODO Auto-generated method stub
-		return null;
+		
+		entityManager.remove(ticket);
+		
+	}
+	
+	@Override
+	public Ticket getLastTicketCreated(User user) {
+		List<Ticket> tickets =  
+				entityManager.createQuery("from Tickets where requesterDetails = :user order by id desc", Ticket.class)
+				.setParameter("user", user.getId()).setMaxResults(1).getResultList();
+		
+		return tickets.size() == 0? null : tickets.get(0);
 	}
 
+	
 }
