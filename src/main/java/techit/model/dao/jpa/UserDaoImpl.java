@@ -43,7 +43,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> getSupervisors(Unit unit) {
 		// TODO Auto-generated method stub
-		return entityManager.createQuery( "from User where unit = :unit and post = 'SUPERVISING TECHNICIAN'", User.class )
+		return entityManager.createQuery( "from User where unit = :unit and post = 'SUPERVISING_TECHNICIAN'", User.class )
 		.setParameter( "unit", unit.getId())
         .getResultList();
 	}
@@ -57,7 +57,7 @@ public class UserDaoImpl implements UserDao {
 	
 	@Override
 	public List<User> getTechniciansAndSupervisors(Unit unit) {
-		return entityManager.createQuery( "from User where unit = :unit and post = 'TECHNICIAN' or post = 'SUPERVISING TECHNICIAN'", User.class )
+		return entityManager.createQuery( "from User where unit = :unit and post = 'TECHNICIAN' or post = 'SUPERVISING_TECHNICIAN'", User.class )
 				.setParameter( "unit", unit.getId())
 		        .getResultList();
 	}
