@@ -1,81 +1,63 @@
 package techit.model.dao;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import techit.model.Ticket;
 import techit.model.Unit;
-import techit.model.User;
 
 
 @Test(groups = "UnitDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-public class UnitDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+class UnitDaoTest extends AbstractTransactionalTestNGSpringContextTests{
 	
-	
-	@Autowired
-    UserDao userDao;
-	
-	@Autowired
+    @Autowired
     UnitDao unitDao;
+    @Autowired
+    UserDao userDao;
+
+	@Test
+	void getUnit() {
+		assert unitDao.getUnit(1L)!=null;
+	}
+	@Test
+	void getUnits() {
+		assert unitDao.getUnits().size()>=2;
+	}
 	
-	@Autowired
-	TicketDao ticketDao;
-
-  @Test
-  public void addTechnicianToUnit() {
-	  
-	  Unit unit = unitDao.getUnit( 1L );
-	  User technician = userDao.getUser( 3L );
-	  
-	  unitDao.addTechnicianToUnit(technician, unit);
-	  
-	  assert unit.getTechnicians().contains(technician);
-  }
-
-  @Test
-  public void deleteUnit() {
-    Unit unit = unitDao.getUnit( 3L );
-    unitDao.deleteUnit(unit);
-    assert unitDao.getUnits().contains(unit) == false;
-  }
-
-  @Test
-  public void getUnit() {
-	 assert unitDao.getUnit( 1L ) !=null;
-  }
-
-  @Test
-  public void getUnitByName() {
-    assert unitDao.getUnitByName("Electrical") !=null;
-  }
-
-  @Test
-  public void getUnits() {
-    assert unitDao.getUnits().size() >= 2;
-  }
-
-  @Test
-  public void removeTechnicianFromUnit() {
-	  Unit unit = unitDao.getUnit( 1L );
-	  User technician = userDao.getUser( 3L );
-	  
-	  unitDao.removeTechnicianFromUnit(technician, unit);
-	  
-	  assert !unit.getTechnicians().contains(technician);
-  }
-
-  @Test
-  public void saveUnit() {
-    Unit unit = new Unit();
-    unit.setName("Painting");
-    unit.setLocation("FA123");
-    unit.setEmail("paint@calstate");
-    unit.setDescription("Painters");
-    unit.setPhone("234536");
-    unit = unitDao.saveUnit(unit);
-    assert unit != null;
-  }
+	@Test
+	void saveUnit() {
+		Unit unit = new Unit();
+		unit.setName("Developing");
+		unit.setDescription("Developing");
+		unit.setEmail("d@g.com");
+		unit.setLocation("AB");
+		unit.setPhone("789456");
+		unit = unitDao.saveUnit(unit);
+		assert unit.getId() != null;
+	}
+	
+	@Test
+	void getUnitByName() {
+		assert unitDao.getUnitByName("Testing").getId() !=null;
+	}
+	
+	@Test
+	void deleteUnit() {
+		unitDao.deleteUnit(unitDao.getUnit(1L));
+		assert unitDao.getUnit(1L) == null;
+	}
+	
+	@Test
+	void addTechnicianToUnit() {
+		unitDao.addTechnicianToUnit(userDao.getUser(6L),unitDao.getUnit(1L));
+		assert userDao.getUser(6L).getUnit().getId() == 1L;
+	}
+	@Test
+	void removeTechnicianFromUnit() {
+		unitDao.removeTechnicianFromUnit(userDao.getUser(2L), unitDao.getUnit(7L));
+		assert userDao.getUser(2L).getUnit()==null;
+	}
 }

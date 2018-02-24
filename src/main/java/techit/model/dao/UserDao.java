@@ -17,7 +17,6 @@ public interface UserDao {
 	
 	List<User> getTechnicians(Unit unit);
 
-	
 	Set<User> getTechniciansAssigned(Ticket ticket);
     
     User authenticateUser(String username, String password);
@@ -27,6 +26,5 @@ public interface UserDao {
     User saveUser( User user );
 
 	List<User> getTechniciansAndSupervisors(Unit unit);
-    
 
 }

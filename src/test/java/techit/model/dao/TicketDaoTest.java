@@ -8,70 +8,55 @@ import org.testng.annotations.Test;
 import techit.model.Ticket;
 import techit.model.User;
 
-
 @Test(groups = "TicketDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-public class TicketDaoTest extends AbstractTransactionalTestNGSpringContextTests  {
-	
-	@Autowired
-    UserDao userDao;
-	
-	@Autowired
-    UnitDao unitDao;
-	
+public class TicketDaoTest extends AbstractTransactionalTestNGSpringContextTests{
 	@Autowired
 	TicketDao ticketDao;
+	@Autowired
+	UserDao userDao;
 	
 	@Test
-	  public void assignTechnician() {
-		Ticket ticket = ticketDao.getTicket( 1L );
-		User technician = userDao.getUser( 1L );
-	    ticketDao.assignTechnician(technician, ticket);
-	    
-	    assert ticket.getTechnicians().contains(technician);
-	  }
-
-	  @Test
-	  public void checkAssignment() {
-		  Ticket ticket = ticketDao.getTicket( 1L );
-			User technician = userDao.getUser( 1L );
-			assert ticketDao.checkAssignment(technician, ticket) == true;
-	  }
-
-	  @Test
-	  public void deleteTicket() {
-		  Ticket ticket = ticketDao.getTicket( 2L );
-		  ticketDao.deleteTicket(ticket);
-		  assert ticketDao.getTickets().contains(ticket) == false;
-	  }
-
-	  @Test
-	  public void getLastTicketCreated() {
-		  User user = userDao.getUser( 1L );
-		  assert ticketDao.getLastTicketCreated(user) != null;
-	  }
-
-	  @Test
-	  public void getTicket() {
-	    assert ticketDao.getTicket( 1L ) != null;
-	  }
-
-	  @Test
-	  public void getTickets() {
-		  assert ticketDao.getTickets().size() >=2;
-	  }
-
-	  @Test
-	  public void getUserTickets() {
-		  User user = userDao.getUser( 1L );
-	    assert ticketDao.getUserTickets(user).size() >=1; 
-	  }
-
-	  @Test
-	  public void saveTicket() {
-		  Ticket ticket = new Ticket();
-		  ticket.setLocation("ESCT");
-		  ticket = ticketDao.saveTicket(ticket);
-		  assert ticket !=null;
-	  }
+	void getTicket() {
+		assert ticketDao.getTicket(1L).getId()!=null;
+	}
+	
+	@Test
+	void getTickets() {
+		assert ticketDao.getTickets().size()>=2;
+	}
+	
+	@Test
+	void checkAssignment() {
+		assert ticketDao.checkAssignment(userDao.getUser(1L), ticketDao.getTicket(1L));
+	}
+	@Test
+	void saveTicket() {
+		Ticket t=new Ticket();
+		t.setSubject("PC error");
+		t=ticketDao.saveTicket(t);
+		assert t.getId()!=null;
+	}
+	@Test
+	void assignTechnician() {
+		ticketDao.assignTechnician(userDao.getUser(4L), ticketDao.getTicket(2L));
+		for(Ticket t: userDao.getUser(4L).getTicketsAssigned()) {
+			if(t.getId()==2L) {
+				assert true;
+				return;
+			}
+		}
+		assert false;
+	}
+	
+	@Test
+	void getUserTickets() {
+		assert ticketDao.getUserTickets(userDao.getUser(3L)).size()>=2;
+	}
+	
+	@Test
+	void deleteTicket() {
+		ticketDao.deleteTicket(ticketDao.getTicket(4L));
+		assert ticketDao.getTicket(4L)==null;
+	}
 }

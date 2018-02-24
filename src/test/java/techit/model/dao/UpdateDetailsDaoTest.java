@@ -5,56 +5,41 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import techit.model.Ticket;
-import techit.model.Unit;
 import techit.model.UpdateDetails;
-import techit.model.User;
 
 
 @Test(groups = "UpdateDetailsDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-public class UpdateDetailsDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+class UpdateDetailsDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Autowired
-    UserDao userDao;
-	
-	@Autowired
-    UnitDao unitDao;
-	
+	UpdateDetailsDao updateDetailsDao;
 	@Autowired
 	TicketDao ticketDao;
-	
 	@Autowired
-	UpdateDetailsDao updateDao;
+	UserDao userDao;
 	
-  @Test
-  public void getTicketUpdates() {
-	  Ticket ticket = ticketDao.getTicket( 1L );
-	  assert updateDao.getTicketUpdates(ticket).size() >=1;
-  }
+	@Test
+	void saveUpdate() {
+		UpdateDetails upd=new UpdateDetails();
+		upd.setUpdateDetails("Test");
+		upd = updateDetailsDao.saveUpdate(upd);
+		assert upd.getId() != null;
+	}
+	
+	@Test
+	void getTicketUpdates() {
+		assert updateDetailsDao.getTicketUpdates(ticketDao.getTicket(1L)).size()>=2;
+	}
+	
+	@Test
+	void getUpdate() {
+		assert updateDetailsDao.getUpdate(2L).getId()!=null;
+	}
+	
+	@Test
+	void getUpdatesByModifier() {
+		assert updateDetailsDao.getUpdatesByModifier(ticketDao.getTicket(1L), userDao.getUser(2L)).size()>=2;
+	}
 
-  @Test
-  public void getUpdate() {
-   assert updateDao.getUpdate( 1L ) !=null;
-  }
-
-  @Test
-  public void getUpdatesByModifier() {
-	  Ticket ticket = ticketDao.getTicket( 1L );
-	  User user = userDao.getUser( 1L );
-    assert updateDao.getUpdatesByModifier(ticket, user).size() >= 1;
-  }
-
-  @Test
-  public void saveUpdate() {
-    UpdateDetails update = new UpdateDetails();
-    Ticket ticket = ticketDao.getTicket( 1L );
-	 User user = userDao.getUser( 1L );
-    update.setModifier(user);
-    update.setTicket(ticket);
-    update = updateDao.saveUpdate(update);
-    
-    assert update !=null;
-    
-  }
 }

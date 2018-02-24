@@ -41,7 +41,8 @@ public class TicketDaoImpl implements TicketDao {
 
 	@Override
 	@Transactional
-	public Ticket saveTicket(Ticket ticket) {
+	public Ticket saveTicket(
+			Ticket ticket) {
 		
 		return entityManager.merge( ticket );
 		
@@ -51,6 +52,7 @@ public class TicketDaoImpl implements TicketDao {
 	@Override
 	public void assignTechnician(User technician, Ticket ticket) {
 		ticket.getTechnicians().add(technician);
+		technician.getTicketsAssigned().add(ticket);
 		entityManager.merge(ticket);
 		
 	}
@@ -58,7 +60,7 @@ public class TicketDaoImpl implements TicketDao {
 	@Override
 	public List<Ticket> getUserTickets(User user) {
 		return entityManager.createQuery("from Ticket where requesterDetails = :user ", Ticket.class)
-				.setParameter("user", user.getId()).getResultList();
+				.setParameter("user", user).getResultList();
 	}
 
 	@Override
@@ -68,15 +70,5 @@ public class TicketDaoImpl implements TicketDao {
 		entityManager.remove(ticket);
 		
 	}
-	
-	@Override
-	public Ticket getLastTicketCreated(User user) {
-		List<Ticket> tickets =  
-				entityManager.createQuery("from Tickets where requesterDetails = :user order by id desc", Ticket.class)
-				.setParameter("user", user.getId()).setMaxResults(1).getResultList();
-		
-		return tickets.size() == 0? null : tickets.get(0);
-	}
-
 	
 }

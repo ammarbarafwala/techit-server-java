@@ -43,22 +43,23 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> getSupervisors(Unit unit) {
 		// TODO Auto-generated method stub
-		return entityManager.createQuery( "from User where unit = :unit and post = 'SUPERVISING_TECHNICIAN'", User.class )
-		.setParameter( "unit", unit.getId())
+		return entityManager.createQuery( "from User where unit = :unit and post = :supervisor", User.class )
+		.setParameter( "unit", unit).setParameter("supervisor", User.Position.SUPERVISING_TECHNICIAN)
         .getResultList();
 	}
 
 	@Override
 	public List<User> getTechnicians(Unit unit) {
-		return entityManager.createQuery( "from User where unit = :unit and post = 'TECHNICIAN'", User.class )
-				.setParameter( "unit", unit.getId())
+		return entityManager.createQuery( "from User where unit = :unit and post = :technician", User.class )
+				.setParameter( "unit", unit).setParameter("technician", User.Position.TECHNICIAN)
 		        .getResultList();
 	}
 	
 	@Override
 	public List<User> getTechniciansAndSupervisors(Unit unit) {
-		return entityManager.createQuery( "from User where unit = :unit and post = 'TECHNICIAN' or post = 'SUPERVISING_TECHNICIAN'", User.class )
-				.setParameter( "unit", unit.getId())
+		return entityManager.createQuery( "from User where unit = :unit and post = :technician or post = :supervisor", User.class )
+				.setParameter( "unit", unit).setParameter("supervisor", User.Position.SUPERVISING_TECHNICIAN)
+				.setParameter("technician", User.Position.TECHNICIAN)
 		        .getResultList();
 	}
 
@@ -79,7 +80,7 @@ public class UserDaoImpl implements UserDao {
 	public User authenticateUser(String username, String password) {
 		User user = getUserByUsername(username);
 		if (user !=null) {
-			if (user.getPassword() == password){
+			if (user.getPassword().equals(password)){
 				return user;
 			} else {
 				return null;

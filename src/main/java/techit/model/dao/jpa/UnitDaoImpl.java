@@ -26,7 +26,9 @@ public class UnitDaoImpl implements UnitDao {
 
 	@Override
 	public Unit getUnit(Long id) {
-		return entityManager.find(Unit.class, id);
+		Unit unit=entityManager.find(Unit.class, id);
+		System.out.println(unit);
+		return unit;
 	}
 
 
@@ -50,11 +52,13 @@ public class UnitDaoImpl implements UnitDao {
 	@Override
 	public void addTechnicianToUnit(User technician, Unit unit) {
 		unit.getTechnicians().add(technician);
+		technician.setUnit(unit);
 	}
 
 	@Override
 	public void removeTechnicianFromUnit(User technician, Unit unit) {
 		unit.getTechnicians().remove(technician);
+		technician.setUnit(null);
 	}
 
 }
