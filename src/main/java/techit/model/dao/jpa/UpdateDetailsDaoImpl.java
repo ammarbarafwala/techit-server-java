@@ -5,11 +5,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.stereotype.Repository;
+
 import techit.model.Ticket;
 import techit.model.UpdateDetails;
 import techit.model.User;
 import techit.model.dao.UpdateDetailsDao;
 
+@Repository
 public class UpdateDetailsDaoImpl implements UpdateDetailsDao {
 
 	@PersistenceContext
@@ -34,7 +37,7 @@ public class UpdateDetailsDaoImpl implements UpdateDetailsDao {
 	@Override
 	public List<UpdateDetails> getUpdatesByModifier(Ticket ticket, User user) {
 		return entityManager.createQuery("from UpdateDetails where modifier = :user", UpdateDetails.class)
-				.setParameter("user", user.getUsername()).getResultList();
+				.setParameter("user", user).getResultList();
 	}
 
 

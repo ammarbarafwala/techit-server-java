@@ -19,9 +19,6 @@ public interface TicketDao {
 
 	void assignTechnician(User technician, Ticket ticket);
 	
-	void deleteTicket(Ticket ticket);
-	
-	Ticket getLastTicketCreated(User user);
-	
+	void deleteTicket(Ticket ticket);	
 	
 }

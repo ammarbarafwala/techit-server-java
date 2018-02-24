@@ -48,7 +48,7 @@ public class User implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private Position post;					// Position of the user.
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="requesterDetails")	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="requesterDetails")
 	private Set<Ticket> ticketsRequested;	// Tickets created by the user.
 	
 	@ManyToMany(fetch=FetchType.LAZY, mappedBy="technicians")
