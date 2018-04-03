@@ -4,4 +4,3 @@ drop table assignments;
 drop table updates;
 drop table tickets;
 drop table units;
-drop table users;

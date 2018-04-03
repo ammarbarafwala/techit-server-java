@@ -1,21 +1,22 @@
 package techit.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -33,9 +34,13 @@ public class User implements Serializable {
 	private String username;					// Username of the user.
 
 	@JsonProperty(access = Access.WRITE_ONLY)
-	@Column(nullable = false)
+	@Transient
 	private String password;					// Password of the user.
 
+	@JsonProperty(access = Access.WRITE_ONLY)
+	@Column(nullable = false)
+	private String hash;
+	
 	@Column(name = "first_name", nullable = false)
 	private String firstName; 				// User's first name
 
@@ -43,17 +48,25 @@ public class User implements Serializable {
 	private String lastName; 				// User's last name
 
 	private String email;					// Email of the user.
+	
+	private boolean enabled = true;
+	
 	private String phone;					// Phone number of the user.
 	
 	@Enumerated(EnumType.STRING)
 	private Position post;					// Position of the user.
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="requesterDetails")
-	private Set<Ticket> ticketsRequested;	// Tickets created by the user.
+    private String department;
 	
-	@ManyToMany(fetch=FetchType.LAZY, mappedBy="technicians")
-	private Set<Ticket> ticketsAssigned;	// Tickets assigned to the technicians
+    @JsonIgnore
+    @OneToMany(mappedBy="requester")
+	private List<Ticket> ticketsRequested;	// Tickets created by the user.
 	
+    @JsonIgnore
+	@ManyToMany(mappedBy="technicians")
+	private List<Ticket> ticketsAssigned;	// Tickets assigned to the technicians
+	
+    @JsonIgnore
 	@ManyToOne
 	private Unit unit;				// Unit that this user belongs to.
 	
@@ -64,8 +77,9 @@ public class User implements Serializable {
 
 	// Default Constructor.
 	public User() {
-		ticketsRequested = new HashSet<Ticket>();
-		ticketsAssigned = new HashSet<Ticket>();
+		post = Position.USER;
+		ticketsRequested = new ArrayList<Ticket>();
+		ticketsAssigned = new ArrayList<Ticket>();
 	} 
 	
 	// Simple constructor for regular users ( students )
@@ -75,22 +89,6 @@ public class User implements Serializable {
 		this.lastName = lastname;
 		this.username = username;
 		this.password = password;
-		this.post = Position.USER;
-	}
-	
-	
-	// Constructor with user information.
-	public User(String username, String password, String firstName, String lastName, String email,
-			String phone, Position post, Unit unit) {
-		this();
-		this.username = username;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.phone = phone;
-		this.post = post;
-		this.unit = unit;
 	}
 
 	public Long getId() {
@@ -170,19 +168,19 @@ public class User implements Serializable {
 		}
 	}
 
-	public Set<Ticket> getTicketsRequested() {
+	public List<Ticket> getTicketsRequested() {
 		return ticketsRequested;
 	}
 
-	public void setTicketsRequested(Set<Ticket> ticketsRequested) {
+	public void setTicketsRequested(List<Ticket> ticketsRequested) {
 		this.ticketsRequested = ticketsRequested;
 	}
 
-	public Set<Ticket> getTicketsAssigned() {
+	public List<Ticket> getTicketsAssigned() {
 		return ticketsAssigned;
 	}
 
-	public void setTicketsAssigned(Set<Ticket> ticketsAssigned) {
+	public void setTicketsAssigned(List<Ticket> ticketsAssigned) {
 		this.ticketsAssigned = ticketsAssigned;
 	}
 
@@ -192,6 +190,30 @@ public class User implements Serializable {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	@Override

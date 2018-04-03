@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 
 import techit.model.Unit;
 import techit.model.User;
+import techit.util.UtilManager;
 
 @Test(groups = "UserDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
@@ -22,9 +23,11 @@ public class UserDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Test
     public void saveUser()
     {
+    	String hashedPassword = UtilManager.encodePassword("abcd");
+    	System.out.println(hashedPassword);
         User user = new User();
         user.setUsername( "Tom" );
-        user.setPassword( "abcd" );
+        user.setHash( hashedPassword );
         user.setFirstName("Thomas");
         user.setLastName("Edison");
         user = userDao.saveUser( user );
@@ -41,7 +44,7 @@ public class UserDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Test
     public void getUserByUsername()
     {
-    	assert userDao.getUserByUsername("ammar").getUsername().equals("ammar");
+    	assert userDao.getUser("ammar").getUsername().equals("ammar");
     }
     
     @Test
@@ -50,35 +53,11 @@ public class UserDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     	Unit unit = unitDao.getUnit(7L);
     	assert userDao.getSupervisors(unit).size()>=2;
     }
-
-    @Test
-    public void getTechnicians() {
-    	
-    	Unit unit = unitDao.getUnit(7L);
-    	assert userDao.getTechnicians(unit).size()>=2;
-    }
-
+    
     @Test
     public void getUsers()
     {
         assert userDao.getUsers().size() >= 2;
-    }
-    
-    @Test
-    public void authenticateUser()
-    {
-    	assert userDao.authenticateUser("ammar", "1234").getUsername().equals("ammar");
-    }
-    
-    @Test
-    public void getTechniciansAndSupervisors() {
-    	Unit unit = unitDao.getUnit(7L);
-    	assert userDao.getTechniciansAndSupervisors(unit).size() >= 4;
-    }
-    
-    @Test
-    public void getTechniciansAssigned() {
-    	assert userDao.getTechniciansAssigned(ticketDao.getTicket(1L)).size()>=2;
     }
 
 }

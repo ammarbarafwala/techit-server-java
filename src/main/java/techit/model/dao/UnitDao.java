@@ -3,7 +3,6 @@ package techit.model.dao;
 import java.util.List;
 
 import techit.model.Unit;
-import techit.model.User;
 
 public interface UnitDao {
 	
@@ -13,13 +12,4 @@ public interface UnitDao {
 	
 	Unit saveUnit(Unit unit);
 	
-	Unit getUnitByName(String name);
-	
-	void deleteUnit(Unit unit);
-	
-	void addTechnicianToUnit(User technician, Unit unit);
-	
-	void removeTechnicianFromUnit(User technician, Unit unit);
-	
-
 }

@@ -3,16 +3,13 @@ package techit.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
@@ -21,8 +18,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "tickets")
@@ -35,24 +30,21 @@ public class Ticket implements Serializable {
     private Long id;						// Ticket's unique id.
 	
 	private String subject;				// Subject of the ticket.
+	
 	private String details;				// Text concerning the project.
 	
 	@Column(name = "start_date")
-	@Temporal(TemporalType.DATE)
 	private Date startDate;				// Project's starting date.
 	
 	@Column(name = "end_date")
-	@Temporal(TemporalType.DATE)
 	private Date endDate; 				// When the project was completed.
 	
 	@Column(name = "update_date")
-	@Temporal(TemporalType.DATE)
 	private Date lastUpdated;			// last date where changes were made to the ticket (edits, technician updates, etc..)
-	
 	
 	private String location;				// Location where the project is.
 	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="ticket")
+	@OneToMany(mappedBy="ticket")
 	private List<UpdateDetails> updates;	// List of all updates that was made to the ticket.
 	
 	@Column(name = "completion_details")
@@ -68,20 +60,23 @@ public class Ticket implements Serializable {
 	private Unit unit;
 	
 	@ManyToOne
-	private User requesterDetails;
+	private User requester;
 	
-	@ManyToMany(fetch=FetchType.LAZY,cascade = CascadeType.ALL)
-	@JoinTable(name = "assignments", joinColumns = @JoinColumn(name = "ticket_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "technician_id", referencedColumnName = "id"))
-	private Set<User> technicians;
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(name = "assignments",
+		joinColumns = @JoinColumn(name = "ticket_id"),
+		inverseJoinColumns = @JoinColumn(name = "technician_id"))
+	private List<User> technicians;
 	
 	public enum Progress { OPEN, IN_PROGRESS, ON_HOLD, COMPLETED, CLOSED }
 	public enum Priority { NOT_ASSIGNED, LOW, MEDIUM, HIGH }
 	
 	// Default Constructor.
 	public Ticket() {
-		technicians =  new HashSet<User>();
+		technicians =  new ArrayList<User>();
 		updates = new ArrayList<UpdateDetails>();
 		progress = Progress.OPEN;
+		priority = Priority.NOT_ASSIGNED;
 		startDate = new Date();
 	}
 
@@ -92,7 +87,7 @@ public class Ticket implements Serializable {
 		this.details = details;
 		this.location = location;
 		this.unit = unit;
-		this.requesterDetails = requesterDetails;
+		this.requester = requesterDetails;
 	}
 
 	public Long getId() {
@@ -192,19 +187,19 @@ public class Ticket implements Serializable {
 		this.unit = unit;
 	}
 
-	public User getRequesterDetails() {
-		return requesterDetails;
+	public User getRequester() {
+		return requester;
 	}
 
-	public void setRequesterDetails(User requesterDetails) {
-		this.requesterDetails = requesterDetails;
+	public void setRequester(User requesterDetails) {
+		this.requester = requesterDetails;
 	}
 
-	public Set<User> getTechnicians() {
+	public List<User> getTechnicians() {
 		return technicians;
 	}
 
-	public void setTechnicians(Set<User> technicians) {
+	public void setTechnicians(List<User> technicians) {
 		this.technicians = technicians;
 	}
 
@@ -213,7 +208,7 @@ public class Ticket implements Serializable {
 		return "Ticket [subject=" + subject + ", details=" + details + ", startDate=" + startDate + ", endDate="
 				+ endDate + ", lastUpdated=" + lastUpdated + ", location=" + location + ", completionDetails="
 				+ completionDetails + ", progress=" + progress + ", priority=" + priority + ", unit=" + unit
-				+ ", requesterDetails=" + requesterDetails + "]";
+				+ ", requesterDetails=" + requester + "]";
 	}
 
 	

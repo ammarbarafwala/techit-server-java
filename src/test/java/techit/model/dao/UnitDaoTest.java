@@ -38,26 +38,4 @@ class UnitDaoTest extends AbstractTransactionalTestNGSpringContextTests{
 		unit = unitDao.saveUnit(unit);
 		assert unit.getId() != null;
 	}
-	
-	@Test
-	void getUnitByName() {
-		assert unitDao.getUnitByName("Testing").getId() !=null;
-	}
-	
-	@Test
-	void deleteUnit() {
-		unitDao.deleteUnit(unitDao.getUnit(1L));
-		assert unitDao.getUnit(1L) == null;
-	}
-	
-	@Test
-	void addTechnicianToUnit() {
-		unitDao.addTechnicianToUnit(userDao.getUser(6L),unitDao.getUnit(1L));
-		assert userDao.getUser(6L).getUnit().getId() == 1L;
-	}
-	@Test
-	void removeTechnicianFromUnit() {
-		unitDao.removeTechnicianFromUnit(userDao.getUser(2L), unitDao.getUnit(7L));
-		assert userDao.getUser(2L).getUnit()==null;
-	}
 }
