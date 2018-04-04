@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import techit.model.Unit;
 import techit.model.User;
-import techit.util.UtilManager;
+import techit.rest.service.SecurityUtils;
 
 @Test(groups = "UserDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
@@ -23,7 +23,7 @@ public class UserDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Test
     public void saveUser()
     {
-    	String hashedPassword = UtilManager.encodePassword("abcd");
+    	String hashedPassword = SecurityUtils.encodePassword("abcd");
     	System.out.println(hashedPassword);
         User user = new User();
         user.setUsername( "Tom" );

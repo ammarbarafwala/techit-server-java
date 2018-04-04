@@ -1,4 +1,4 @@
-package techit.util;
+package techit.rest.service;
 
 import java.security.Key;
 
@@ -7,9 +7,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
+import techit.model.User;
 
-public class UtilManager {
-	private final static Key KEY = MacProvider.generateKey();
+public class SecurityUtils {
+	private final static String KEY = "SECRET";
 	private final static BCryptPasswordEncoder BCRYPT = new BCryptPasswordEncoder();
 	
 	public static String encodePassword(String rawPassword) {
@@ -20,14 +21,15 @@ public class UtilManager {
 		return BCRYPT.matches(rawPassword, encodedPassword);
 	}
 	
-	public static String createJwtToken(String username) {
+	public static String createJwtToken( User user ) {
 		return Jwts.builder()
-				.setSubject(username)
+				.setSubject(user.getUsername())
+				.claim("user", user)
 				.signWith(SignatureAlgorithm.HS512, KEY)
 				.compact();
 	}
 	
-	public static String matchToken(String token) {
-		return Jwts.parser().setSigningKey(KEY).parseClaimsJws(token).getBody().getSubject();
+	public static Object getUser(String token) {
+		return Jwts.parser().setSigningKey(KEY).parseClaimsJws(token).getBody().get("user");
 	}
 }

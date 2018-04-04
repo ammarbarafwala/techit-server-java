@@ -155,19 +155,6 @@ public class User implements Serializable {
 		this.post = post;
 	}
 
-	public String getPostString() {
-		switch (getPost()) {
-		case SYS_ADMIN:
-			return "SYSTEM ADMINISTRATOR";
-		case SUPERVISING_TECHNICIAN:
-			return "SUPERVISING TECHNICIAN";
-		case TECHNICIAN:
-			return "TECHNICIAN";
-		default:
-			return "USER";
-		}
-	}
-
 	public List<Ticket> getTicketsRequested() {
 		return ticketsRequested;
 	}
@@ -219,8 +206,7 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "First name: " + getFirstName() + "\n" + "Last name:" + getLastName() + "\n" + "User name:"
-				+ getUsername() + "\n" + "Phone number:" + getPhone() + "\n" + "Email:" + getEmail() + "\n" + "Post:"
-				+ getPostString() + "\n";
+				+ getUsername() + "\n" + "Phone number:" + getPhone() + "\n" + "Email:" + getEmail() + "\n";
 	}
 
 }
