@@ -3,10 +3,10 @@ package techit.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -18,16 +18,15 @@ public class UpdateDetails implements Serializable {
 	
 	@Id
     @GeneratedValue
-    private Long id;					// Updates unique id.
+    private Long id;				// Updates unique id.
 	
 	@ManyToOne
-	@JoinColumn(
-	        name = "modifier", 
-	        referencedColumnName = "username"
-	    )
 	private User modifier; 			// modifier's username.
 	
+	@Column(name = "details")
 	private String updateDetails;	// Details of updates.
+	
+	@Column(name = "date")
 	private Date modifiedDate;		// Date on which the update was made.
 	
 	@ManyToOne

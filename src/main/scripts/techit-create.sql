@@ -1,112 +1,91 @@
-create table assignments (
-       ticket_id bigint not null,
-        technician_id bigint not null
-    ) engine=InnoDB;
-
 create table hibernate_sequence (
-       next_val bigint
-    ) engine=InnoDB;
+	next_val bigint
+);
 
-insert into hibernate_sequence values ( 1 );
-
-insert into hibernate_sequence values ( 1 );
-
-insert into hibernate_sequence values ( 1 );
-
-insert into hibernate_sequence values ( 1 );
+insert into hibernate_sequence values ( 10000 );
 
 create table tickets (
-       id bigint not null,
-        completion_details varchar(255),
-        details varchar(255),
-        end_dt datetime,
-        update_dt datetime,
-        update_tm varchar(255),
-        location varchar(255),
-        priority varchar(255),
-        progress varchar(255),
-        start_dt datetime,
-        start_time varchar(255),
-        subject varchar(255),
-        requesterDetails_id bigint,
-        unit_id bigint,
-        primary key (id)
-    ) engine=InnoDB;
+	id					bigint primary key,
+	completion_details	varchar(8000),
+	details				varchar(500),
+	end_date			datetime,
+	update_date			datetime,
+	location			varchar(255),
+	priority			varchar(255) default 'MEDIUM',
+	progress			varchar(255) default 'OPEN',
+	start_date			datetime default now(),
+	subject				varchar(255),
+	requester_id		bigint not null references users(id),
+	unit_id				bigint references units(id)
+);
 
 create table units (
-       id bigint not null,
-        description varchar(255) not null,
-        email varchar(255) not null,
-        location varchar(255) not null,
-        name varchar(255) not null,
-        phone varchar(255) not null,
-        primary key (id)
-    ) engine=InnoDB;
+	id				bigint primary key,
+	description		varchar(500),
+	email			varchar(255),
+	location		varchar(255),
+	name			varchar(255) not null,
+	phone			varchar(255)
+);
 
 create table updates (
-       id bigint not null,
-        modifiedDate varchar(255),
-        updateDetails varchar(255),
-        modifier varchar(255),
-        ticket_id bigint,
-        primary key (id)
-    ) engine=InnoDB;
+	id				bigint primary key,
+	date			datetime,
+	details			varchar(8000),
+	modifier_id		bigint not null references users(id),
+	ticket_id		bigint not null references tickets(id)
+);
 
 create table users (
-       id bigint not null,
-        email varchar(255),
-        first_name varchar(255) not null,
-        last_name varchar(255) not null,
-        password varchar(255) not null,
-        phone varchar(255),
-        post varchar(255),
-        username varchar(255) not null,
-        unit_id bigint,
-        primary key (id)
-    ) engine=InnoDB;
+	id				bigint primary key,
+	department		varchar(255),
+	email			varchar(255),
+	enabled			boolean default true,
+	first_name		varchar(255) not null,
+	hash			varchar(255) not null,
+	last_name		varchar(255) not null,
+	phone			varchar(255),
+	post			varchar(255) default 'USER',
+	username		varchar(255) not null,
+	unit_id			bigint references units(id)
+);
 
-alter table units 
-       add constraint UK_etw07nfppovq9p7ov8hcb38wy unique (name);
+create table assignments(
+	ticket_id		bigint not null references tickets(id),
+	technician_id	bigint not null references users(id)
+);
 
-alter table users 
-       add constraint UK_r43af9ap4edm43mmtq01oddj6 unique (username);
 
-alter table assignments 
-       add constraint FK8mhcham1p9eg34kjjukrysfec 
-       foreign key (technician_id) 
-       references users (id);
+insert into techit2.users(id, username, hash, first_name, last_name, unit_id, post)
+	values (1,'admin', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'Admin', 'admin', 7, 'TECHNICIAN');
+insert into techit2.users( id,username, hash, first_name, last_name, unit_id, post) 
+	values (2,'ammar', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'ammar', 'barafwala', 7, 'SUPERVISING_TECHNICIAN');
+insert into techit2.users( id,username, hash, first_name, last_name, unit_id, post) 
+	values (3,'kenny', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'Adekola', 'Togunloju', 7, 'SUPERVISING_TECHNICIAN');
+insert into techit2.users( id,username, hash, first_name, last_name, unit_id, post) 
+	values (4,'viccena', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'Vicky', 'Saravanan', 7,'TECHNICIAN');
+insert into techit2.users( id,username, hash, first_name, last_name) 
+	values (6,'vic', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'Vicky', 'Saravanan');
 
-alter table assignments 
-       add constraint FKo9wcactgruf2l6m8tw49vm7kv 
-       foreign key (ticket_id) 
-       references tickets (id);
 
-alter table tickets 
-       add constraint FKo5pcvdw2fctifmrgvohqfcef6 
-       foreign key (requesterDetails_id) 
-       references users (id);
+insert into units (id, description, email, location, name,phone) 
+	values (7, 'Testing','a@g.com', 'KH', 'Testing', '123456');
+insert into units (id, description, email, location, name,phone) 
+	values (1, 'Testing2','a@g.com', 'KH', 'Testing2', '123456');
 
-alter table tickets 
-       add constraint FKmj126vcy9uobxd6rfu269wjc2 
-       foreign key (unit_id) 
-       references units (id);
+insert into tickets (id, subject, requester_id) 
+	values(1, 'Ac Repair', 4);
+insert into tickets (id, subject, requester_id) 
+	values(2, 'Projector Failure', 2);
+insert into tickets (id, subject, requester_id) 
+	values(3, 'Ac Repair',3);
+insert into tickets (id, subject, requester_id) 
+	values(4, 'Ac Repair',3);
 
-    alter table updates 
-       add constraint FKkm5vbuo5qarrdod33upfsgugn 
-       foreign key (modifier) 
-       references users (username);
+insert into assignments values(1, 1);
+insert into assignments values(1, 4);
 
-alter table updates 
-       add constraint FK3fnl74oyd1raon25v5lo3hyag 
-       foreign key (ticket_id) 
-       references tickets (id);
-
-alter table users 
-       add constraint FKp2hfld4bhbwtakwrmt4xq6een 
-       foreign key (unit_id) 
-       references units (id);
-
-       
-insert into users (id, first_name, last_name, username, password) values (1, 'admin', 'admin', 'admin', 'abcd');
-insert into users (id, first_name, last_name, username, password) values (2, 'cysun', 'cysun', 'cysun', 'abcd');
-
+insert into updates (id, details,ticket_id,modifier_id) 
+	value(1,'Demo',1,2);
+insert into updates (id, details,ticket_id,modifier_id) 
+	value(2,'Demo2',1,2);

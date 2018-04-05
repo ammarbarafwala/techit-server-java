@@ -1,13 +1,12 @@
 package techit.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -21,33 +20,29 @@ public class Unit implements Serializable {
 	
 	@Id
     @GeneratedValue
-    private Long id;					// Unit's unique id.
+    private Long id;				// Unit's unique id.
 	
 	@Column(nullable = false, unique = true)
-	private String name;				// Name of the unit.
+	private String name;			// Name of the unit.
 	
-	@Column(nullable = false)
 	private String phone;			// Phone number of the unit.
 
-	@Column(nullable = false)
-	private String location;			// Location of the unit.
+	private String location;		// Location of the unit.
 
-	@Column(nullable = false)
 	private String email;			// Email of the unit.
 
-	@Column(nullable = false)
 	private String description;		// Supplemental info about the unit.
 	
-	@OneToMany(mappedBy="unit", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<Ticket> tickets;	// Tickets assigned to the unit.
+	@OneToMany(mappedBy="unit",cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+	private List<Ticket> tickets;	// Tickets assigned to the unit.
 	
-	@OneToMany(mappedBy="unit", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<User> technicians;	// Technicians working under the unit.
+	@OneToMany(mappedBy="unit", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+	private List<User> technicians;	// Technicians working under the unit.
 	
 	//Default Constructor.
 	public Unit() {
-		technicians = new HashSet<User>();
-		tickets = new HashSet<Ticket>();
+		technicians = new ArrayList<User>();
+		tickets = new ArrayList<Ticket>();
 	}
 
 	public Unit(String name, String phone, String location, String email, String description) {
@@ -107,19 +102,19 @@ public class Unit implements Serializable {
 		this.description = description;
 	}
 
-	public Set<Ticket> getTickets() {
+	public List<Ticket> getTickets() {
 		return tickets;
 	}
 
-	public void setTickets(Set<Ticket> tickets) {
+	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
 	}
 
-	public Set<User> getTechnicians() {
+	public List<User> getTechnicians() {
 		return technicians;
 	}
 
-	public void setTechnicians(Set<User> technicians) {
+	public void setTechnicians(List<User> technicians) {
 		this.technicians = technicians;
 	}
 	

@@ -28,18 +28,7 @@ class UpdateDetailsDaoTest extends AbstractTransactionalTestNGSpringContextTests
 	}
 	
 	@Test
-	void getTicketUpdates() {
-		assert updateDetailsDao.getTicketUpdates(ticketDao.getTicket(1L)).size()>=2;
-	}
-	
-	@Test
 	void getUpdate() {
 		assert updateDetailsDao.getUpdate(2L).getId()!=null;
 	}
-	
-	@Test
-	void getUpdatesByModifier() {
-		assert updateDetailsDao.getUpdatesByModifier(ticketDao.getTicket(1L), userDao.getUser(2L)).size()>=2;
-	}
-
 }
