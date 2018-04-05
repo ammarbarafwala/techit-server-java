@@ -57,7 +57,7 @@ create table assignments(
 
 
 insert into techit2.users(id, username, hash, first_name, last_name, unit_id, post)
-	values (1,'admin', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'Admin', 'admin', 7, 'TECHNICIAN');
+	values (1,'admin', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'Admin', 'admin', 7, 'SYS_ADMIN');
 insert into techit2.users( id,username, hash, first_name, last_name, unit_id, post) 
 	values (2,'ammar', '$2a$10$4Mss6qmmc8FLwLe8sIXrP.1Y1B41Hgagi4nKDmeqk3kT1POnbzmI6', 'ammar', 'barafwala', 7, 'SUPERVISING_TECHNICIAN');
 insert into techit2.users( id,username, hash, first_name, last_name, unit_id, post) 
