@@ -63,6 +63,7 @@ public class Ticket implements Serializable {
 	@ManyToOne
 	private Unit unit;
 	
+	@JsonIgnore
 	@ManyToOne
 	private User requester;
 	

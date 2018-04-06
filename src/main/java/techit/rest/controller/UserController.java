@@ -60,6 +60,13 @@ public class UserController {
 		return userDao.saveUser(user);
 	}
 	
+	@RequestMapping(value = "/technicians/{userId}/tickets", method = RequestMethod.GET)
+	public List<Ticket> getTechnicianTickets(@PathVariable Long userId, @ModelAttribute("currentUser") User currentUser) {
+		if ((currentUser.getId() == userId && currentUser.getPost() == User.Position.TECHNICIAN) || currentUser.getPost() == User.Position.SYS_ADMIN  )
+			return userDao.getUser(userId).getTicketsAssigned();
+    throw new RestException(403, "Unauthorized Access");
+	}
+  
 	@RequestMapping(value = "/users/{userId}/tickets", method = RequestMethod.GET)
 	public List<Ticket> getUserTickets( @PathVariable Long userId, @ModelAttribute("currentUser") User currentUser) {
 		
