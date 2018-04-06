@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import techit.model.User;
 import techit.model.dao.UserDao;
 import techit.rest.error.RestException;
+import techit.security.SecurityUtils;
 
 @RestController
 public class LoginService {
@@ -17,10 +18,9 @@ public class LoginService {
 	private UserDao userDao;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String getUser(@RequestParam String username, @RequestParam String password) {
-		System.out.println("hi "+username);
+	public String login(@RequestParam String username, @RequestParam String password) {
 		User user = userDao.getUser(username);
-		System.out.println("hello "+username);
+		
 		if (user != null && SecurityUtils.checkPassword(password, user.getHash()))
 			return SecurityUtils.createJwtToken(user);
 

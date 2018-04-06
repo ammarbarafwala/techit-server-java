@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import techit.model.Unit;
 import techit.model.User;
-import techit.rest.service.SecurityUtils;
+import techit.security.SecurityUtils;
 
 @Test(groups = "UserDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")

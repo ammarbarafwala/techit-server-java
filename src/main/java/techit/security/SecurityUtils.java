@@ -1,4 +1,4 @@
-package techit.rest.service;
+package techit.security;
 
 import java.security.Key;
 

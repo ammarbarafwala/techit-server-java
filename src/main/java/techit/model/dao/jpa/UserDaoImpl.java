@@ -12,6 +12,7 @@ import techit.model.Unit;
 import techit.model.User;
 import techit.model.dao.UserDao;
 import techit.rest.service.*;
+import techit.security.SecurityUtils;
 
 @Repository
 public class UserDaoImpl implements UserDao {
