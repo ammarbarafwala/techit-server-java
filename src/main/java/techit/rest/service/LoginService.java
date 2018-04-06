@@ -26,4 +26,5 @@ public class LoginService {
 
 		throw new RestException(401, "Username/Password invalid");
 	}
+	
 }
