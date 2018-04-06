@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import techit.model.Unit;
 import techit.model.User;
 import techit.model.dao.UserDao;
+import techit.rest.service.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -38,6 +39,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	@Transactional
 	public User saveUser(User user) {
+		
 		return entityManager.merge(user);
 	}
 
