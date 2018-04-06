@@ -19,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tickets")
 public class Ticket implements Serializable {
@@ -44,6 +46,7 @@ public class Ticket implements Serializable {
 	
 	private String location;				// Location where the project is.
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="ticket")
 	private List<UpdateDetails> updates;	// List of all updates that was made to the ticket.
 	
@@ -56,12 +59,15 @@ public class Ticket implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private Priority priority;			// Importance or level of urgency of the ticket
 	
+	@JsonIgnore
 	@ManyToOne
 	private Unit unit;
 	
+	@JsonIgnore
 	@ManyToOne
 	private User requester;
 	
+	@JsonIgnore
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "assignments",
 		joinColumns = @JoinColumn(name = "ticket_id"),

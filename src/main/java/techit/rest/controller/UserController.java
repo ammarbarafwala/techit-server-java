@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import techit.model.Ticket;
 import techit.model.User;
 import techit.model.dao.UserDao;
 import techit.rest.error.RestException;
@@ -55,7 +56,16 @@ public class UserController {
 			throw new RestException(400, "Missing username and/or password.");
 
 		user.setHash(SecurityUtils.encodePassword(user.getPassword()));
+		user.setId(userId);
 		return userDao.saveUser(user);
+	}
+	
+	
+	@RequestMapping(value = "/technicians/{userId}/tickets", method = RequestMethod.GET)
+	public List<Ticket> getTechnicianTickets(@PathVariable Long userId, @ModelAttribute("currentUser") User currentUser) {
+		if ((currentUser.getId() == userId && currentUser.getPost() == User.Position.TECHNICIAN) || currentUser.getPost() == User.Position.SYS_ADMIN  )
+			return userDao.getUser(userId).getTicketsAssigned();
+		throw new RestException(403, "Unauthorized Access");
 	}
 
 }
