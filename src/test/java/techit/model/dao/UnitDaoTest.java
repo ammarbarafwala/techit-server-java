@@ -11,7 +11,7 @@ import techit.model.Unit;
 
 @Test(groups = "UnitDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-class UnitDaoTest extends AbstractTransactionalTestNGSpringContextTests{
+public class UnitDaoTest extends AbstractTransactionalTestNGSpringContextTests{
 	
     @Autowired
     UnitDao unitDao;

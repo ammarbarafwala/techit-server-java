@@ -10,7 +10,7 @@ import techit.model.UpdateDetails;
 
 @Test(groups = "UpdateDetailsDaoTest")
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
-class UpdateDetailsDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class UpdateDetailsDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
 	@Autowired
 	UpdateDetailsDao updateDetailsDao;
