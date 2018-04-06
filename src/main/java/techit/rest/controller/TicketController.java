@@ -1,7 +1,7 @@
 package techit.rest.controller;
 
 import java.util.List;
-import java.util.Date
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import techit.model.Ticket;
+import techit.model.UpdateDetails;
 import techit.model.User;
 import techit.model.dao.TicketDao;
 import techit.model.dao.UserDao;
