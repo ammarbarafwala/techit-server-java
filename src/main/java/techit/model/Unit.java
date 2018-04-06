@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "units")
 public class Unit implements Serializable {
@@ -33,9 +35,11 @@ public class Unit implements Serializable {
 
 	private String description;		// Supplemental info about the unit.
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="unit",cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<Ticket> tickets;	// Tickets assigned to the unit.
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="unit", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private List<User> technicians;	// Technicians working under the unit.
 	
