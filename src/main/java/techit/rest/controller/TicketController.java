@@ -102,7 +102,7 @@ public class TicketController {
 	@RequestMapping(value = "/tickets/{ticketId}/technicians/{userId}", method = RequestMethod.PUT)
 	public Ticket assignTechnician(@PathVariable Long ticketId,@PathVariable Long userId,@ModelAttribute("currentUser") User currentUser) {
 		User user=userDao.getUser(userId);
-		if((currentUser.getPost() != User.Position.SYS_ADMIN 
+		if((currentUser.getPost() != User.Position.SYS_ADMIN
 				&& (currentUser.getPost() != User.Position.SUPERVISING_TECHNICIAN || currentUser.getUnit().getId() != user.getUnit().getId()))
 				|| (user.getPost()!=User.Position.TECHNICIAN && user.getPost()!=User.Position.SUPERVISING_TECHNICIAN)) {
 			
