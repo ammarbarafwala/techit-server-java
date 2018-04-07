@@ -3,8 +3,7 @@ package techit.rest.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
+import org.hamcrest.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -77,6 +76,15 @@ public class TicketControllerTest extends AbstractTransactionalTestNGSpringConte
 	}
 	
 	@Test
+	void addTicketFail() throws Exception {
+		
+		this.mockMvc.perform(post("/tickets")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(4L)))
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().is(500));
+	}
+	
+	@Test
 	void getTicketPass() throws Exception{
 		
 		this.mockMvc.perform(get("/tickets/{ticketId}",3)
@@ -121,12 +129,101 @@ public class TicketControllerTest extends AbstractTransactionalTestNGSpringConte
 		.andExpect(MockMvcResultMatchers.status().is(403));
 	}
 	
-//	@Test
-//	void getTicketTechniciansPass() throws Exception{
-//		
-//		this.mockMvc.perform(get("/tickets/{ticketId}/technicians",1)
-//				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(1L))))
-//		.andExpect(MockMvcResultMatchers.status().isOk())
-//		.andExpect(MockMvcResultMatchers.jsonPath("$.length()",2));
-//	}
+	@Test
+	void getTicketTechniciansPass() throws Exception{
+		
+		this.mockMvc.perform(get("/tickets/{ticketId}/technicians",1)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(1L))))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(Matchers.greaterThan(1)));
+	}
+	
+	@Test
+	void getTicketTechniciansFail() throws Exception{
+		
+		this.mockMvc.perform(get("/tickets/{ticketId}/technicians",2)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(2L))))
+		.andExpect(MockMvcResultMatchers.status().is(403));
+	}
+	
+	@Test
+	void assignTechnicianPass() throws Exception{
+		
+		this.mockMvc.perform(put("/tickets/{ticketId}/technicians/{userId}",3,2)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(1L))))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty());
+	}
+	
+	@Test
+	void assignTechnicianFail() throws Exception{
+		
+		this.mockMvc.perform(put("/tickets/{ticketId}/technicians/{userId}",3,4)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(6L))))
+		.andExpect(MockMvcResultMatchers.status().is(403));
+	}
+	
+	@Test
+	void setStatusPass() throws Exception{
+		
+		this.mockMvc.perform(put("/tickets/{ticketId}/status/{status}",3,Ticket.Progress.IN_PROGRESS)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(1L)))
+				.content("\"Status changed to InProgress\"")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.progress").value("IN_PROGRESS"));
+	}
+	
+	@Test
+	void setStatusFail() throws Exception{
+		
+		this.mockMvc.perform(put("/tickets/{ticketId}/status/{status}",3,Ticket.Progress.IN_PROGRESS)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(6L)))
+				.content("\"Status changed to InProgress\"")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().is(403));
+	}
+	
+	@Test
+	void setPriorityPass() throws Exception{
+		
+		this.mockMvc.perform(put("/tickets/{ticketId}/priority/{priority}",3,Ticket.Priority.HIGH)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(1L)))
+				.content("\"Priority changed to High\"")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.priority").value("HIGH"));
+	}
+	
+	@Test
+	void setPriorityFail() throws Exception{
+		
+		this.mockMvc.perform(put("/tickets/{ticketId}/priority/{priority}",3,Ticket.Priority.HIGH)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(6L)))
+				.content("\"Priority changed to High\"")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().is(403));
+	}
+	
+	@Test
+	void setUpdatePass() throws Exception{
+		
+		this.mockMvc.perform(post("/tickets/{ticketid}/updates",3)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(1L)))
+				.content("{\"details\" : \"Demo3\"}")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty());
+	}
+	
+	@Test
+	void setUpdateFail() throws Exception{
+		
+		this.mockMvc.perform(post("/tickets/{ticketid}/updates",3)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(6L)))
+				.content("{\"details\" : \"Demo3\"}")
+				.contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(MockMvcResultMatchers.status().is(403));
+	}
+	
 }

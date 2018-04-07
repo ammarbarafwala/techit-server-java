@@ -184,7 +184,6 @@ public class UserControllerTest extends AbstractTransactionalTestNGSpringContext
 		
 		this.mockMvc.perform(get("/technicians/{userId}/tickets",4)
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(2L))))
-		.andDo(print())
 		.andExpect(MockMvcResultMatchers.status().isOk())
 		.andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1));
 		
@@ -193,9 +192,8 @@ public class UserControllerTest extends AbstractTransactionalTestNGSpringContext
 	@Test
 	void getTechnicianTicketsFail() throws Exception{
 		
-		this.mockMvc.perform(get("/technicians/{userId}/tickets",6)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(3L))))
-		.andDo(print())
+		this.mockMvc.perform(get("/technicians/{userId}/tickets",4)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(6L))))
 		.andExpect(MockMvcResultMatchers.status().is(403));
 		
 	}
@@ -205,7 +203,6 @@ public class UserControllerTest extends AbstractTransactionalTestNGSpringContext
 		
 		this.mockMvc.perform(get("/users/{userId}/tickets",4)
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + SecurityUtils.createJwtToken(userDao.getUser(4L))))
-		.andDo(print())
 		.andExpect(MockMvcResultMatchers.status().isOk())
 		.andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1));
 	}

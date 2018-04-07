@@ -107,7 +107,7 @@ public class TicketController {
 		if((currentUser.getPost() != User.Position.SYS_ADMIN 
 				&& (currentUser.getPost() != User.Position.SUPERVISING_TECHNICIAN || currentUser.getUnit().getId() != user.getUnit().getId())
 				&& (currentUser.getPost() != User.Position.TECHNICIAN || currentUser.getId()!=userId))
-				|| (user.getPost()!=User.Position.TECHNICIAN || user.getPost()!=User.Position.SUPERVISING_TECHNICIAN)) {
+				|| (user.getPost()!=User.Position.TECHNICIAN && user.getPost()!=User.Position.SUPERVISING_TECHNICIAN)) {
 			
 			throw new RestException(403, "Unauthorized Access");
 		}

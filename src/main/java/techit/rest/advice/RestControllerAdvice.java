@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jsonwebtoken.SignatureException;
 import techit.model.User;
 import techit.model.dao.UserDao;
 import techit.rest.error.RestException;
@@ -26,8 +28,10 @@ public class RestControllerAdvice {
 			String token = bearerToken.contains("Bearer") ? bearerToken.split("Bearer")[1] : bearerToken;
 			User user = mapper.convertValue(SecurityUtils.getUser(token), User.class);
 			return user;
-		} catch (Exception ex) {
+		} catch (NullPointerException ex) {
 			throw new RestException(401, "Access denied! User not logged in.");
+		} catch(SignatureException se) {
+			throw new RestException(401, "User Unauthorized.");
 		}
 	}
 
