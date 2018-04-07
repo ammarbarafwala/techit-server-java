@@ -74,8 +74,7 @@ public class TicketController {
 		
 		if(originalTicket.getRequester().getId() == currentUser.getId()
 				|| currentUser.getPost() == User.Position.SYS_ADMIN 
-				|| currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN
-				|| (currentUser.getPost() == User.Position.TECHNICIAN && originalTicket.getTechnicians().contains(currentUser))) {
+				|| currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN) {
 			
 			ticket.setId(ticketId);
 			ticket.setRequester(currentUser);
@@ -96,32 +95,26 @@ public class TicketController {
 		if(currentUser.getPost() == User.Position.SYS_ADMIN 
 				|| (currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN && ticket.getUnit().getId() == currentUser.getUUnitId()))
 			return ticket.getTechnicians();
-			
+
 		throw new RestException(403, "Unauthorized Access");
 	}
 	
 	@RequestMapping(value = "/tickets/{ticketId}/technicians/{userId}", method = RequestMethod.PUT)
 	public Ticket assignTechnician(@PathVariable Long ticketId,@PathVariable Long userId,@ModelAttribute("currentUser") User currentUser) {
 		User user=userDao.getUser(userId);
-		System.out.println("hello");
-		if((currentUser.getPost() != User.Position.SYS_ADMIN 
-				&& (currentUser.getPost() != User.Position.SUPERVISING_TECHNICIAN || currentUser.getUnit().getId() != user.getUnit().getId())
-				&& (currentUser.getPost() != User.Position.TECHNICIAN || currentUser.getId()!=userId))
+		if((currentUser.getPost() != User.Position.SYS_ADMIN
+				&& (currentUser.getPost() != User.Position.SUPERVISING_TECHNICIAN || currentUser.getUnit().getId() != user.getUnit().getId()))
 				|| (user.getPost()!=User.Position.TECHNICIAN && user.getPost()!=User.Position.SUPERVISING_TECHNICIAN)) {
 			
 			throw new RestException(403, "Unauthorized Access");
 		}
-		System.out.println("hi");
 		Ticket ticket=ticketDao.getTicket(ticketId);
 		
-		for(User u:ticket.getTechnicians())
-		{
-			if(u.getId()==userId)
-			{
+
+			if(ticket.getTechnicians().contains(user)) {
 				throw new RestException(400, "Bad Request");
+
 			}
-		}
-		
 		ticket.getTechnicians().add(user);
 		ticket.setId(ticketId);
 		return ticketDao.saveTicket(ticket);

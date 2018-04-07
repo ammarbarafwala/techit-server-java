@@ -26,7 +26,7 @@ public class UserController {
 	public User getUser(@PathVariable Long userId, @ModelAttribute("currentUser") User currentUser) {
 		if (currentUser.getId() == userId || currentUser.getPost() == User.Position.SYS_ADMIN) {
 			User user =  userDao.getUser(userId);
-			if (user == null) throw new RestException(404, "User Not Found");
+			if (user == null) {throw new RestException(404, "User Not Found");}
 			return user;
 		}
 		throw new RestException(403, "Unauthorized Access");
