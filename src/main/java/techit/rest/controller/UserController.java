@@ -43,11 +43,16 @@ public class UserController {
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	public User addUser(@ModelAttribute("currentUser") User currentUser, @RequestBody User user) {
         if (currentUser.getPost() != User.Position.SYS_ADMIN)
-            throw new RestException(403, "Forbidden");
+            throw new RestException(403, "Unauthorized Access");
 		if (user.getUsername() == null || user.getPassword() == null || user.getUsername() == "" || user.getPassword() == "")
 			throw new RestException(400, "Missing username and/or password.");
 		user.setHash(SecurityUtils.encodePassword(user.getPassword()));
-		return userDao.saveUser(user);
+		try {
+			return userDao.saveUser(user);
+		}
+		catch(Exception ex) {
+			throw new RestException(400, "Username already exists");
+		}
 	}
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
@@ -71,15 +76,24 @@ public class UserController {
 	
 	@RequestMapping(value = "/technicians/{userId}/tickets", method = RequestMethod.GET)
 	public List<Ticket> getTechnicianTickets(@PathVariable Long userId, @ModelAttribute("currentUser") User currentUser) {
-		if ((currentUser.getId() == userId && currentUser.getPost() == User.Position.TECHNICIAN) || currentUser.getPost() == User.Position.SYS_ADMIN  )
-			return userDao.getUser(userId).getTicketsAssigned();
-    throw new RestException(403, "Unauthorized Access");
+		
+		User technician = userDao.getUser(userId);
+		if(technician==null || (technician.getPost()!= User.Position.TECHNICIAN && technician.getPost()!= User.Position.SUPERVISING_TECHNICIAN))
+			throw new RestException(400, "Invalid Technician Id");
+		
+		if ((currentUser.getId() == userId && currentUser.getPost() == User.Position.TECHNICIAN) 
+				|| (currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN && currentUser.getUUnitId() == technician.getUUnitId())
+				|| currentUser.getPost() == User.Position.SYS_ADMIN  ) {
+			return technician.getTicketsAssigned();
+		}
+		throw new RestException(403, "Unauthorized Access");
 	}
   
 	@RequestMapping(value = "/users/{userId}/tickets", method = RequestMethod.GET)
 	public List<Ticket> getUserTickets( @PathVariable Long userId, @ModelAttribute("currentUser") User currentUser) {
 		
-		if (currentUser.getPost() == User.Position.SYS_ADMIN || currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN
+		if (currentUser.getPost() == User.Position.SYS_ADMIN
+				|| currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN
 				|| currentUser.getId() == userId)
 			return userDao.getUser(userId).getTicketsRequested();
 

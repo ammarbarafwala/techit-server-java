@@ -73,10 +73,10 @@ insert into units (id, description, email, location, name,phone)
 insert into units (id, description, email, location, name,phone) 
 	values (1, 'Testing2','a@g.com', 'KH', 'Testing2', '123456');
 
-insert into tickets (id, subject, requester_id) 
-	values(1, 'Ac Repair', 4);
-insert into tickets (id, subject, requester_id) 
-	values(2, 'Projector Failure', 2);
+insert into tickets (id, subject, requester_id, unit_id) 
+	values(1, 'Ac Repair', 4, 7);
+insert into tickets (id, subject, requester_id, unit_id) 
+	values(2, 'Projector Failure', 2, 1);
 insert into tickets (id, subject, requester_id) 
 	values(3, 'Ac Repair',3);
 insert into tickets (id, subject, requester_id) 
@@ -84,6 +84,7 @@ insert into tickets (id, subject, requester_id)
 
 insert into assignments values(1, 1);
 insert into assignments values(1, 4);
+insert into assignments values(3,4);
 
 insert into updates (id, details,ticket_id,modifier_id) 
 	value(1,'Demo',1,2);

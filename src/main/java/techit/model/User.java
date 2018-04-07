@@ -91,6 +91,17 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	// Use unitId instead of unit in serialization
+    public Long getUUnitId()
+    {
+        return unit != null ? unit.getId() : null;
+    }
+    
+    public void setUUnitId(Long id) {
+    	unit = new Unit();
+    	unit.setId(id);
+    }
+    
 	public Long getId() {
 		return id;
 	}
@@ -201,6 +212,15 @@ public class User implements Serializable {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(getClass() != obj.getClass())
+			return false;
+		
+		return id.equals(((User)obj).id);
 	}
 
 	@Override

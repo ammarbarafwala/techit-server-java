@@ -17,7 +17,6 @@ import techit.model.dao.TicketDao;
 import techit.model.dao.UserDao;
 import techit.model.dao.UpdateDetailsDao;
 import techit.rest.error.RestException;
-import techit.security.SecurityUtils;
 
 
 @RestController
@@ -52,8 +51,13 @@ public class TicketController {
 	@RequestMapping(value = "/tickets/{ticketId}", method = RequestMethod.GET)
 	public Ticket getTicket(@ModelAttribute("currentUser") User currentUser,@PathVariable Long ticketId) {
 		Ticket ticket =ticketDao.getTicket(ticketId);
-		if(ticket.getRequester().getId()==currentUser.getId() ||
-		 currentUser.getPost() == User.Position.SYS_ADMIN || currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN)
+		if(ticket==null)
+			throw new RestException(400, "No such Ticket found");
+		
+		if(ticket.getRequester().getId()==currentUser.getId() 
+				|| currentUser.getPost() == User.Position.SYS_ADMIN 
+				|| currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN
+				|| (currentUser.getPost() == User.Position.TECHNICIAN && ticket.getTechnicians().contains(currentUser)))
 			return ticket;
 
 		throw new RestException(403, "Unauthorized Access");
@@ -63,10 +67,15 @@ public class TicketController {
 	public Ticket editTicket(@PathVariable Long ticketId, @RequestBody Ticket ticket,
 			@ModelAttribute("currentUser") User currentUser) {
 		
-		Long userId =ticketDao.getTicket(ticketId).getRequester().getId();
+		Ticket originalTicket = ticketDao.getTicket(ticketId);
 		
-		if(userId==currentUser.getId() ||
-		   currentUser.getPost() == User.Position.SYS_ADMIN || currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN) {
+		if(originalTicket==null)
+			throw new RestException(400, "No such Ticket found");
+		
+		if(originalTicket.getRequester().getId() == currentUser.getId()
+				|| currentUser.getPost() == User.Position.SYS_ADMIN 
+				|| currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN
+				|| (currentUser.getPost() == User.Position.TECHNICIAN && originalTicket.getTechnicians().contains(currentUser))) {
 			
 			ticket.setId(ticketId);
 			ticket.setRequester(currentUser);
@@ -79,11 +88,14 @@ public class TicketController {
 	@RequestMapping(value = "/tickets/{ticketId}/technicians", method = RequestMethod.GET)
 	public List<User> getTicketTechnicians(@PathVariable Long ticketId,@ModelAttribute("currentUser") User currentUser) {
 		
-		if(currentUser.getPost() == User.Position.SYS_ADMIN || currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN) {
-			
-			Ticket ticket=ticketDao.getTicket(ticketId);
+		Ticket ticket=ticketDao.getTicket(ticketId);
+		
+		if(ticket==null)
+			throw new RestException(400, "No such Ticket found");
+		
+		if(currentUser.getPost() == User.Position.SYS_ADMIN 
+				|| (currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN && ticket.getUnit().getId() == currentUser.getUUnitId()))
 			return ticket.getTechnicians();
-		}
 			
 		throw new RestException(403, "Unauthorized Access");
 	}

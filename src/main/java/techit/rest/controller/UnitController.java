@@ -40,22 +40,21 @@ public class UnitController {
 	
 	@RequestMapping(value = "/units/{unitId}/technicians", method = RequestMethod.GET)
 	public List<User> getUnitTechnicians( @PathVariable Long unitId, @ModelAttribute("currentUser") User currentUser ){
-		Unit unit = unitDao.getUnit(unitId);
 		
-		if( ( currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN && currentUser.getUnit().getId() == unitId)
+		if( ( currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN && currentUser.getUUnitId() == unitId)
 				|| currentUser.getPost() == User.Position.SYS_ADMIN)
-			return unit.getTechnicians();
+			return unitDao.getUnit(unitId).getTechnicians();
 		
 		throw new RestException(403, "Unauthorized Access");
 	}
 	
-//	@RequestMapping(value = "/units/{unitId}/tickets", method = RequestMethod.GET)
-//	public List<Ticket> getUnitTickets( @PathVariable Long unitId, @ModelAttribute("currentUser") User currentUser ){
-//		Unit unit = unitDao.getUnit(unitId);
-//		
-//		if(currentUser.getPost() == User.Position.SYS_ADMIN)
-//			return unit.getTechnicians();
-//		
-//		throw new RestException(403, "Unauthorized Access");
-//	}
+	@RequestMapping(value = "/units/{unitId}/tickets", method = RequestMethod.GET)
+	public List<Ticket> getUnitTickets( @PathVariable Long unitId, @ModelAttribute("currentUser") User currentUser ){
+		
+		if( currentUser.getPost() == User.Position.SUPERVISING_TECHNICIAN
+				|| currentUser.getPost() == User.Position.SYS_ADMIN)
+			return unitDao.getUnit(unitId).getTickets();
+		
+		throw new RestException(403, "Unauthorized Access");
+	}
 }
